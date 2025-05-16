@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Autentificare în aplicația Mobile Banking - UniCredit</title>
+    <link rel="stylesheet" href="node_modules/boxicons/css/boxicons.min.css" />
+    <style>
+      :root {
+        --unicredit-blue: #007a91;
+        --unicredit-red: #dd0000;
+        --light-gray: #f5f5f5;
+        --medium-gray: #e0e0e0;
+        --dark-gray: #333333;
+        --white: #ffffff;
+      }
+      html {
+        font-size: 16px;
+      }
+
+      @media (min-width: 768px) {
+        html {
+          font-size: 18px;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        html {
+          font-size: 20px;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        color: var(--dark-gray);
+        background-color: var(--white);
+        line-height: 1.6;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .sticky-header-wrapper {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: var(--white);
+        margin: 0px;
+      }
+
+      header {
+        background-color: transparent;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+
+      #skip-to-content {
+        padding: 0;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        border: 2px solid var(--unicredit-blue);
+        background-color: white;
+        color: var(--unicredit-blue);
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease-in-out;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      #skip-to-content.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #skip-to-content i {
+        font-size: 24px;
+        }
+
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+      }
+
+      main {
+        padding: 2rem 0;
+      }
+
+      h1 {
+        color: var(--unicredit-blue);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        max-width: 800px;
+      }
+
+      h2 {
+        color: var(--unicredit-blue);
+        margin: 1.5rem 0 1rem;
+        font-size: 1.5rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+
+      .steps-container {
+        margin: 2rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .step {
+        background-color: #f8f5f5;
+        border-left: 3px solid var(--unicredit-blue);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .step-number {
+        background-color: var(--unicredit-blue);
+        color: #fff;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .step-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+      }
+
+      .step-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        justify-content: center;
+      }
+
+      .step-text {
+        max-width: 600px;
+      }
+
+      .step-text p {
+        margin-bottom: 0.75rem;
+        color: #555;
+        line-height: 1.6;
+      }
+
+      .download-options ul,
+      .step-text ul {
+        padding-left: 1.5rem;
+        color: #555;
+      }
+
+      .download-options ul li::before,
+      .step-text ul li::before {
+        content: "•";
+        color: #0096a1;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+
+      .step-media {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+      }
+
+      .step-image {
+        max-height: 400px;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      @media (min-width: 768px) {
+        .step-content {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+
+        .step-text,
+        .step-media {
+          flex: 1;
+        }
+      }
+
+      .tip {
+        background-color: var(--light-gray);
+        border-left: 4px solid var(--unicredit-blue);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .tip-title {
+        font-weight: bold;
+        color: var(--unicredit-blue);
+        margin-bottom: 0.5rem;
+      }
+
+      .important {
+        background-color: #ffebee;
+        border-left: 4px solid var(--unicredit-red);
+      }
+
+      .btn {
+        background-color: var(--unicredit-blue);
+        color: var(--white);
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s;
+        background-color: var(--unicredit-blue);
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+      }
+
+      .btn:hover {
+        background-color: --unicredit-blue;
+      }
+
+      .btn:focus {
+        background-color: #007a91;
+        outline: 3px solid #66a3d2;
+        outline-offset: 2px;
+      }
+
+      .interactive-demo {
+        margin: 2rem 0;
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+      }
+
+      .phone-frame {
+        max-width: 300px;
+        margin: 0 auto;
+        border: 10px solid var(--dark-gray);
+        border-radius: 36px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .phone-screen {
+        background-color: var(--white);
+        padding: 1rem;
+        min-height: 500px;
+      }
+
+      .screen-content {
+        display: none;
+      }
+
+      .screen-content.active {
+        display: block;
+      }
+
+      .app-header {
+        background-color: var(--unicredit-blue);
+        color: var(--white);
+        padding: 1rem;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--medium-gray);
+        border-radius: 4px;
+      }
+
+      .form-input:focus {
+        outline: 2px solid var(--unicredit-blue);
+        border-color: var(--unicredit-blue);
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .section-counter {
+        font-weight: bold;
+        letter-spacing: 0.3ch;
+        font-size: 22px;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .pagination-dot {
+        width: 12px;
+        height: 12px;
+        background-color: var(--medium-gray);
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .pagination-dot.active {
+        background-color: var(--unicredit-blue);
+      }
+
+      .app-footer {
+        background-color: var(--light-gray);
+        padding: 1rem;
+        text-align: center;
+        border-radius: 0 0 8px 8px;
+        margin-top: 1rem;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border-radius: 8px 8px 0 0;
+        background-color: var(--white);
+        color: var(--dark-gray);
+        font-size: 0.9rem;
+        border-top: 1px solid var(--medium-gray);
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .footer-link {
+        text-decoration: none;
+        color: black;
+      }
+
+      .footer-link:hover {
+        text-decoration: underline;
+      }
+
+      .progress-container {
+        width: 100%;
+        background-color: var(--medium-gray);
+        border-radius: 4px;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: var(--unicredit-blue);
+        border-radius: 4px;
+        width: 0;
+        transition: width 0.3s;
+        position: sticky;
+      }
+
+      .faq {
+        margin: 2rem 0;
+      }
+
+      .faq-item {
+        border-bottom: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s ease;
+      }
+
+      .faq-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .faq-question {
+        background: transparent;
+        padding: 1rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        color: #333;
+        transition: color 0.3s;
+      }
+
+      .faq-question:hover {
+        color: var(--unicredit-blue);
+      }
+
+      .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 0;
+        color: #555;
+        font-size: 0.95rem;
+      }
+
+      .faq-answer.active {
+        padding: 0.5rem 0 1rem 0;
+        max-height: 500px;
+      }
+
+      .faq-icon {
+        color: var(--unicredit-blue);
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-left: 1rem;
+      }
+
+      .faq-answer p,
+      .faq-answer ul {
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
+      }
+
+      .faq-answer ul {
+        list-style: none;
+        padding-left: 1.5rem;
+      }
+
+      .faq-answer ul li::before {
+        content: "•";
+        color: var(--unicredit-blue);
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+
+      .faq-answer.active {
+        padding: 1rem 1.5rem;
+        max-height: 500px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      a:focus,
+      button:focus,
+      input:focus,
+      [tabindex]:focus {
+        outline: 3px solid #66a3d2;
+        outline-offset: 2px;
+      }
+
+      .bx {
+        font-size: 20px;
+      }
+
+      #prev-btn,
+      #next-btn {
+        border-radius: 50px;
+        height: 50px;
+        width: 50px;
+        padding: 0px !important;
+      }
+
+      .first-part {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .first-part img {
+        width: 80%;
+        max-width: 250px;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        border-radius: 12px;
+      }
+
+      .first-part div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      @media (min-width: 768px) {
+        .first-part {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          text-align: left;
+          gap: 2rem;
+        }
+
+        .first-part img {
+          width: 250px;
+          max-width: 250px;
+        }
+      }
+
+      @media (max-width: 800px) {
+        .store-buttons {
+          flex-direction: column;
+        }
+      }
+      .store-buttons,
+      .variant-buttons {
+        display: flex;
+        gap: 1rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .store-btn,
+      .variant-buttons .btn {
+        background-color: var(--unicredit-blue);
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+        flex: 1;
+        text-align: center;
+      }
+
+      .store-btn:hover {
+        background-color: #005f6b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sticky-header-wrapper">
+      <header>
+        <div class="logo-container">
+          <img
+            src="/images/unicredit_logo.png"
+            alt="Logo UniCredit"
+            class="logo"
+          />
+        </div>
+        <nav>
+          <button class="btn" id="skip-to-content" onclick="scrollToTop()">
+            <i class="bx bx-chevron-up"></i>
+          </button>
+        </nav>
+      </header>
+
+      <div class="progress-container">
+        <div
+          class="progress-bar"
+          id="progress-bar"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        ></div>
+      </div>
+    </div>
+
+    <main id="main-content">
+      <div class="first-part">
+        <div>
+          <h1>Autentificare în aplicația Mobile Banking</h1>
+
+          <p>
+            Bine ați venit la tutorialul despre autentificarea în aplicația
+            Mobile Banking UniCredit. În acest ghid interactiv, veți învăța cum
+            să vă autentificați în siguranță în aplicație pentru a accesa
+            serviciile bancare.
+          </p>
+        </div>
+        <img src="/images/first-image-uni.png" class="first-image" />
+      </div>
+
+      <div class="steps-container">
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">1</div>
+            <h2 class="step-title">Instalarea aplicației Mobile Banking</h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>
+                <strong
+                  >Înainte de a începe, asigurați-vă că aveți aplicația
+                  instalată pe dispozitivul dumneavoastră.</strong
+                >
+              </p>
+
+              <p>
+                Pentru descărcare, alegeți una dintre platformele disponibile:
+              </p>
+              <div class="store-buttons">
+                <a
+                  href="https://apps.apple.com"
+                  target="_blank"
+                  class="btn store-btn"
+                  >App Store</a
+                >
+                <a
+                  href="https://play.google.com/store"
+                  target="_blank"
+                  class="btn store-btn"
+                  >Google Play</a
+                >
+              </div>
+              <p>După finalizarea instalării:</p>
+              <ul>
+                <li>
+
+                    Localizați aplicația
+                    <strong>UniCredit Mobile Banking</strong> pe ecranul
+                    telefonului.
+                  </p>
+                </li>
+
+                <li>Apăsați pe iconiță pentru a deschide aplicația.</</li>
+              </ul>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/pas1.png"
+                alt="Ecran de descărcare a aplicației Mobile Banking"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">2</div>
+            <h2 class="step-title">Accesarea aplicației Mobile Banking</h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>
+                <strong
+                  >După instalarea aplicației, urmați pașii de mai jos pentru a accesa aplicația UniCredit Mobile Banking:</strong
+                >
+              </p>
+              <ul>
+                <li>
+                  Deschideți aplicația instalată pe telefonul dumneavoastră.
+                </li>
+                <li>
+                  Veți vedea <strong>ecranul de bun venit</strong>.
+                </li>
+                <li>
+                  În partea de jos a ecranului apare butonul
+                  <strong>"Activează"</strong>.
+                </li>
+              </ul>
+              <p>Prin apăsarea butonului <strong>"Activează"</strong>:</p>
+              <ul>
+                <li>
+                  Veți fi direcționat către procesul de activare a contului dumneavoastră de Mobile Banking.
+                </li>
+                <li>
+                  Veți urma instrucțiunile afișate pentru finalizarea
+                  configurării.
+                </li>
+              </ul>
+            </div>
+            <div class="step-media">
+              <img
+                src="/images/pas2.png"
+                alt="Ecranul de bun venit al aplicației Mobile Banking"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">3</div>
+            <h2 class="step-title">
+              Acceptarea notei de informare privind prelucrarea datelor cu caracter personal
+            </h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>
+                <strong>Înainte de a continua, este important să parcurgeți nota de informare privind prelucrarea datelor personale.</strong>
+              </p>
+              <p>În această etapă:</p>
+              <ul>
+                <li>
+                  Aflați cum sunt utilizate datele dumneavoastră personale de
+                  către UniCredit Bank SA.
+                </li>
+                <li>
+                  Confirmați că ați citit și ați înțeles politica privind
+                  protecția datelor conform Regulamentului UE 679/2016 (GDPR).
+                </li>
+                <li>
+                  Acceptați prelucrarea datelor pentru a continua utilizarea
+                  aplicației.
+                </li>
+              </ul>
+              <p>
+                Bifați opțiunea <strong>"Am citit și am înțeles"</strong> pentru
+                a confirma acordul.
+              </p>
+              <p>
+                Apoi, apăsați pe butonul <strong>"Continuă"</strong> pentru a
+                merge mai departe în procesul de activare.
+              </p>
+            </div>
+            <div class="step-media">
+              <img
+                src="/images/pas3.png"
+                alt="Ecranul de informare cu vedere la prelucrarea datelor cu caracter personal"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">4</div>
+            <h2 class="step-title">
+              Selectarea modului de activare a contului
+            </h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>
+                <strong
+                  >Pentru activarea contului UniCredit Mobile Banking, aveți la
+                  dispoziție două variante:</strong
+                >
+              </p>
+              <ul>
+                <li>
+                  <strong
+                    >Varianta 1 - Activare folosind cardul UniCredit</strong
+                  >
+                  <ul>
+                    <li>
+                      Introduceți <strong>numărul cardului</strong> UniCredit.
+                    </li>
+                    <li>
+                      Confirmați <strong>numărul de telefon</strong> asociat
+                      contului dumneavoastră.
+                    </li>
+                    <li>
+                      Introduceți <strong>CNP-ul</strong> personal pentru
+                      verificare.
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <strong
+                    >Varianta 2 - Activare folosind nume utilizator și cod de
+                    activare</strong
+                  >
+                  <ul>
+                    <li>
+                      Introduceți <strong>numele de utilizator</strong> oferit
+                      de bancă la înregistrare.
+                    </li>
+                    <li>
+                      Introduceți <strong>codul de activare</strong> primit prin
+                      SMS pe numărul înregistrat.
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <p>
+                Alegeți una dintre variantele de mai jos pentru a continua procesul de activare:
+              </p>
+              <div
+                class="variant-buttons"
+                style="
+                  margin-top: 1rem;
+                  display: flex;
+                  gap: 1rem;
+                  flex-wrap: wrap;
+                "
+              >
+                <button class="btn" onclick="showVariant('card')">
+                  CARD UNICREDIT
+                </button>
+                <button class="btn" onclick="showVariant('code')">
+                  NUME UTILIZATOR
+                </button>
+              </div>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/pas4.png"
+                alt="Ecran de selecție a modului de activare a contului"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <div id="variant-card" style="display: none">
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">5</div>
+              <h2>Completează datele cardului tău UniCredit</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  <strong>Pentru a-ți verifica identitatea și a activa contul, va trebui
+                    să introduci următoarele informații de pe cardul tău UniCredit:</strong>
+                </p>
+                <ul>
+                  <li>Primele 6 cifre ale cardului tău UniCredit</li>
+                  <li>Ultimele 4 cifre ale aceluiași card</li>
+                  <li>Ultimele 4 cifre din CNP-ul tău</li>
+                  <li>PIN-ul cardului tău UniCredit</li>
+                </ul>
+                <p>
+                  După completarea corectă a tuturor câmpurilor, apasă pe
+                  butonul <strong>"Continuă"</strong> pentru a merge mai departe
+                  cu activarea contului.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/pas5.png"
+                  alt="Ecran completare date card UniCredit"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">6</div>
+              <h2>Confirmarea numărului de telefon</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  Pentru a continua activarea, trebuie să confirmi numărul tău
+                  de telefon.
+                </p>
+                <ul>
+                  <li>Completează cifrele lipsă din numărul de telefon afișat pe ecran.</li>
+                  <li>Apasă pe butonul <strong>"Validează"</strong> pentru a confirma.</li>
+                  <li>După validare, vei primi un SMS pe numărul completat.</li>
+                  <li>Deschide linkul primit prin SMS pentru a continua procesul de activare.</li>
+                </ul>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/pas6.png"
+                  alt="Ecran completare cifre lipsă"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">7</div>
+              <h2>Setarea codului PIN</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  <strong>După accesarea linkului primit prin SMS, vei fi direcționat către ecranul de setare a codului PIN de securitate.</strong>
+                </p>
+                <ul>
+                  <li>Alege un cod PIN format din cel puțin <strong>6 cifre</strong>.</li>
+                  <li>Codul PIN trebuie să fie <strong>fără cifre consecutive</strong> (de exemplu: 123456 nu este acceptat).</li>
+                  <li>Codul PIN trebuie să fie <strong>fără cifre repetitive</strong> (de exemplu: 111111 nu este acceptat).</li>
+                </ul>
+                <p>
+                  Sub câmpurile de introducere a codului PIN, ai opțiunea de a activa autentificarea biometrică . Acest pas este <strong>opțional</strong>.  
+                  Poți continua doar cu codul PIN sau poți alege să activezi și autentificarea biometrică pentru o experiență mai rapidă.
+                </p>
+                <p>
+                  După ce ai completat codul PIN și ai ales opțiunile dorite, apasă pe butonul <strong>"Continuă"</strong> pentru a finaliza configurarea.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/pas7.png"
+                  alt="Ecran completare PIN"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">8</div>
+              <h2>Activarea Touch ID / Face ID</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  Pentru a activa autentificarea biometrică prin <strong>amprentă (Touch ID)</strong> sau <strong>recunoaștere facială (Face ID)</strong>, este necesar să citești informațiile privind:
+                </p>
+                <ul>
+                  <li>Modalitatea de colectare și utilizare a datelor biometrice.</li>
+                  <li>Condițiile în care aceste date sunt folosite exclusiv pentru accesarea aplicației Mobile Banking.</li>
+                  <li>Respectarea normelor de confidențialitate și protecția datelor cu caracter personal.</li>
+                  <li>Responsabilitatea ta de a păstra dispozitivul securizat.</li>
+                </ul>
+                <p>
+                  După ce ai citit întregul text afișat în aplicație, apasă pe butonul <strong>"ACCEPT"</strong> pentru a activa autentificarea biometrică și a continua.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/termeni-conditii.png"
+                  alt="Ecran activare Touch ID/ Face ID"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">9</div>
+              <h2>Activare finalizată</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  Felicitări! Activarea contului tău UniCredit Mobile Banking a fost finalizată cu succes.
+                </p>
+                <ul>
+                  <li>Acum ai acces complet la funcționalitățile aplicației.</li>
+                  <li>Poți vizualiza soldul contului, efectua plăți și gestiona finanțele personale direct de pe telefonul mobil.</li>
+                  <li>Te sfătuim să activezi și notificările push pentru a rămâne la curent cu activitatea contului tău în timp real.</li>
+                </ul>
+                <p>
+                  Aplicația este pregătită să te ajute în gestionarea rapidă și sigură a operațiunilor bancare de zi cu zi.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/pas8.png"
+                  alt="Ecran activare finalizată"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div id="variant-code" style="display: none">
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">5</div>
+              <h2>Introducere numelui de utilizator</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  Pentru a continua procesul de activare, completează <strong>numele tău de utilizator</strong> în câmpul afișat pe ecran.
+                </p>
+                <p>
+                  Dacă nu îți amintești numele de utilizator, poți contacta <strong>InfoCenter UniCredit</strong> pentru asistență și recuperarea acestuia.
+                </p>
+                <p>
+                  După completarea corectă a numelui de utilizator, apasă pe butonul <strong>"Continuă"</strong> pentru a primi un SMS de confirmare.
+                </p>
+                <p>
+                  Vei primi un SMS pe numărul asociat contului tău, care conține un <strong>link</strong> pe care trebuie să îl accesezi pentru a continua procesul de activare.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/pas2.5.png"
+                  alt="Ecran completare a numelui utilizatorului"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">6</div>
+              <h2>Setarea codului PIN</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  <strong>După accesarea linkului primit prin SMS, vei fi direcționat către ecranul de setare a codului PIN de securitate.</strong>
+                </p>
+                <ul>
+                  <li>Alege un cod PIN format din cel puțin <strong>6 cifre</strong>.</li>
+                  <li>Codul PIN trebuie să fie <strong>fără cifre consecutive</strong> (de exemplu: 123456 nu este acceptat).</li>
+                  <li>Codul PIN trebuie să fie <strong>fără cifre repetitive</strong> (de exemplu: 111111 nu este acceptat).</li>
+                </ul>
+                <p>
+                  Sub câmpurile de introducere a codului PIN, ai opțiunea de a activa autentificarea biometrică . Acest pas este <strong>opțional</strong>.  
+                  Poți continua doar cu codul PIN sau poți alege să activezi și autentificarea biometrică pentru o experiență mai rapidă.
+                </p>
+                <p>
+                  După ce ai completat codul PIN și ai ales opțiunile dorite, apasă pe butonul <strong>"Continuă"</strong> pentru a finaliza configurarea.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/pas7.png"
+                  alt="Ecran completare PIN"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">7</div>
+              <h2>Activarea Touch ID / Face ID</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  Pentru a activa autentificarea biometrică prin <strong>amprentă (Touch ID)</strong> sau <strong>recunoaștere facială (Face ID)</strong>, este necesar să citești informațiile privind:
+                </p>
+                <ul>
+                  <li>Modalitatea de colectare și utilizare a datelor biometrice.</li>
+                  <li>Condițiile în care aceste date sunt folosite exclusiv pentru accesarea aplicației Mobile Banking.</li>
+                  <li>Respectarea normelor de confidențialitate și protecția datelor cu caracter personal.</li>
+                  <li>Responsabilitatea ta de a păstra dispozitivul securizat.</li>
+                </ul>
+                <p>
+                  După ce ai citit întregul text afișat în aplicație, apasă pe butonul <strong>"ACCEPT"</strong> pentru a activa autentificarea biometrică și a continua.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/termeni-conditii.png"
+                  alt="Ecran activare Touch ID/ Face ID"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="step">
+            <div class="step-header">
+              <div class="step-number">8</div>
+              <h2>Activare finalizată</h2>
+            </div>
+            <div class="step-content">
+              <div class="step-text">
+                <p>
+                  Felicitări! Activarea contului tău UniCredit Mobile Banking a fost finalizată cu succes.
+                </p>
+                <ul>
+                  <li>Acum ai acces complet la funcționalitățile aplicației.</li>
+                  <li>Poți vizualiza soldul contului, efectua plăți și gestiona finanțele personale direct de pe telefonul mobil.</li>
+                  <li>Te sfătuim să activezi și notificările push pentru a rămâne la curent cu activitatea contului tău în timp real.</li>
+                </ul>
+                <p>
+                  Aplicația este pregătită să te ajute în gestionarea rapidă și sigură a operațiunilor bancare de zi cu zi.
+                </p>
+              </div>
+              <div class="step-media">
+                <img
+                  src="/images/pas8.png"
+                  alt="Ecran activare finalizată"
+                  class="step-image"
+                />
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-title">Sfat util</div>
+        <p>
+          Pentru a nu repeta procesul de activare la fiecare accesare, îți recomandăm să activezi autentificarea biometrică (amprentă sau recunoaștere facială) sau să bifezi opțiunea "Reține-mă" la autentificare. Astfel, vei putea accesa rapid aplicația, fără a introduce de fiecare dată numele de utilizator. Totuși, din motive de securitate, parola sau codul PIN îți vor fi solicitate periodic sau la fiecare accesare de pe un dispozitiv nou.
+        </p>
+      </div>
+
+      <div class="tip important">
+        <div class="tip-title">Important!</div>
+        <p>
+          Nu împărtășiți niciodată credențialele de autentificare cu nimeni,
+          inclusiv angajații UniCredit. Banca nu va solicita niciodată datele
+          dumneavoastră de autentificare prin telefon, email sau mesaje.
+        </p>
+      </div>
+
+       <h2>Demonstrație interactivă</h2> 
+       <div class="interactive-demo">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="screen-content active" id="screen1">
+              <div class="app-header">
+                <h3>UniCredit Mobile Banking</h3>
+              </div>
+              <div style="text-align: center; margin: 2rem 0">
+                <img
+                  src="/api/placeholder/150/40"
+                  alt="Logo UniCredit"
+                  style="margin-bottom: 2rem"
+                />
+                <h4>Bine ați venit!</h4>
+                <p style="margin: 1rem 0">
+                  Vă rugăm să vă autentificați pentru a continua
+                </p>
+                <button class="btn" onclick="showScreen(2)">
+                  Autentificare
+                </button>
+              </div>
+            </div>
+
+            <div class="screen-content" id="screen2">
+              <div class="app-header">
+                <h3>Autentificare</h3>
+              </div>
+              <div style="padding: 1rem">
+                <form id="login-form">
+                  <div class="form-group">
+                    <label for="username" class="form-label"
+                      >Utilizator / ID Client</label
+                    >
+                    <input
+                      type="text"
+                      id="username"
+                      class="form-input"
+                      required
+                      aria-required="true"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="password" class="form-label">Parolă</label>
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-input"
+                      required
+                      aria-required="true"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input type="checkbox" id="remember-me" />
+                    <label for="remember-me">Reține-mă</label>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn"
+                    onclick="showScreen(3)"
+                    style="width: 100%"
+                  >
+                    Autentificare
+                  </button>
+                </form>
+                <div style="text-align: center; margin-top: 1rem">
+                  <a href="#" onclick="showScreen(1)">Înapoi</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="screen-content" id="screen3">
+              <div class="app-header">
+                <h3>Verificare în doi pași</h3>
+              </div>
+              <div style="padding: 1rem; text-align: center">
+                <p>
+                  Am trimis un cod de verificare la numărul dvs. de telefon.
+                </p>
+                <div class="form-group">
+                  <label for="verification-code" class="form-label"
+                    >Cod de verificare</label
+                  >
+                  <input
+                    type="text"
+                    id="verification-code"
+                    class="form-input"
+                    required
+                    aria-required="true"
+                  />
+                </div>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem">
+                  Codul expiră în: <span id="countdown">2:00</span>
+                </p>
+                <button
+                  type="button"
+                  class="btn"
+                  onclick="showScreen(4)"
+                  style="width: 100%"
+                >
+                  Verifică
+                </button>
+                <div style="text-align: center; margin-top: 1rem">
+                  <a href="#" onclick="showScreen(2)">Înapoi</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="screen-content" id="screen4">
+              <div class="app-header">
+                <h3>Autentificare biometrică</h3>
+              </div>
+              <div style="padding: 1rem; text-align: center">
+                <img
+                  src="/api/placeholder/100/100"
+                  alt="Ícono de huella digital"
+                  style="margin: 1rem 0"
+                />
+                <p>
+                  Doriți să activați autentificarea prin amprentă pentru
+                  accesări viitoare?
+                </p>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem">
+                  <button
+                    type="button"
+                    class="btn"
+                    onclick="showScreen(5)"
+                    style="flex: 1"
+                  >
+                    Da
+                  </button>
+                  <button
+                    type="button"
+                    class="btn"
+                    onclick="showScreen(5)"
+                    style="flex: 1; background-color: #666"
+                  >
+                    Nu
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="screen-content" id="screen5">
+              <div class="app-header">
+                <h3>UniCredit Mobile Banking</h3>
+              </div>
+              <div style="padding: 1rem; text-align: center">
+                <h4>Autentificare reușită!</h4>
+                <p style="margin: 1rem 0">
+                  Bine ați venit în aplicația Mobile Banking
+                </p>
+                <div
+                  style="
+                    background-color: var(--light-gray);
+                    border-radius: 8px;
+                    padding: 1rem;
+                    margin: 1rem 0;
+                  "
+                >
+                  <p style="font-weight: bold">Sold curent</p>
+                  <p style="font-size: 1.5rem; font-weight: bold">
+                    12.345,67 RON
+                  </p>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 2rem;
+                  "
+                >
+                  <div style="text-align: center">
+                    <div
+                      style="
+                        background-color: var(--unicredit-blue);
+                        color: white;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0 auto;
+                      "
+                    >
+                      <span>P</span>
+                    </div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem">Plăți</p>
+                  </div>
+                  <div style="text-align: center">
+                    <div
+                      style="
+                        background-color: var(--unicredit-blue);
+                        color: white;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0 auto;
+                      "
+                    >
+                      <span>T</span>
+                    </div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem">
+                      Transfer
+                    </p>
+                  </div>
+                  <div style="text-align: center">
+                    <div
+                      style="
+                        background-color: var(--unicredit-blue);
+                        color: white;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0 auto;
+                      "
+                    >
+                      <span>I</span>
+                    </div>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem">Istoric</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn" id="prev-btn" onclick="prevScreen()" disabled>
+            <i class="bx bx-chevron-left"></i>
+          </button>
+          <div class="section-counter" id="section-counter">1/5</div>
+          <button class="btn" id="next-btn" onclick="nextScreen()">
+            <i class="bx bx-chevron-right"></i>
+          </button>
+        </div>
+      </div> 
+
+      <h2>Întrebări frecvente</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Am uitat parola. Ce pot face?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Dacă ați uitat parola, urmați acești pași:</p>
+            <ul>
+              <li>
+                Pe ecranul de autentificare, apăsați pe opțiunea "Am uitat
+                parola".
+              </li>
+              <li>Introduceți numele de utilizator sau ID-ul de client.</li>
+              <li>Urmați instrucțiunile pentru verificarea identității.</li>
+              <li>Creați o nouă parolă respectând cerințele de securitate.</li>
+            </ul>
+            <p>
+              Alternativ, contactați serviciul de asistență clienți la 0800 100
+              200.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Cum activez autentificarea biometrică?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Pentru a activa autentificarea biometrică:</p>
+            <ul>
+              <li>
+                Autentificați-vă în aplicație folosind credențialele standard
+              </li>
+              <li>Navigați la secțiunea "Setări" sau "Securitate"</li>
+              <li>Selectați opțiunea "Autentificare biometrică"</li>
+              <li>
+                Urmați instrucțiunile pentru a înregistra amprenta sau
+                recunoașterea facială
+              </li>
+            </ul>
+            <p>
+              Notă: Dispozitivul dvs. trebuie să suporte autentificare
+              biometrică pentru a utiliza această funcție.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Ce fac dacă nu primesc codul de verificare?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Dacă nu primiți codul de verificare:</p>
+            <ul>
+              <li>
+                Verificați dacă numărul de telefon înregistrat este corect
+              </li>
+              <li>
+                Asigurați-vă că aveți semnal și conexiune la rețeaua mobilă
+              </li>
+              <li>Așteptați până la 5 minute, uneori mesajele pot întârzia</li>
+              <li>Utilizați opțiunea "Retrimite cod" din aplicație</li>
+              <li>
+                Dacă problema persistă, contactați serviciul de asistență
+                clienți
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div>© 2025 UniCredit Bank. Toate drepturile rezervate.</div>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Asistență</a>
+        <a href="#" class="footer-link">Termeni și condiții</a>
+        <a href="#" class="footer-link">Politica de confidențialitate</a>
+      </div>
+    </footer>
+
+    <script>
+      function showVariant(variant) {
+        document.getElementById("variant-card").style.display =
+          variant === "card" ? "block" : "none"
+        document.getElementById("variant-code").style.display =
+          variant === "code" ? "block" : "none"
+      }
+      // Afișează butonul doar când user-ul face scroll
+      window.onscroll = function () {
+        const btn = document.getElementById("skip-to-content")
+        if (
+          document.body.scrollTop > 300 ||
+          document.documentElement.scrollTop > 300
+        ) {
+          btn.classList.add("visible")
+        } else {
+          btn.classList.remove("visible")
+        }
+      }
+
+      // Scroll smooth până în top
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
+      // Funcție pentru a sări la conținutul principal
+      document
+        .getElementById("skip-to-content")
+        .addEventListener("click", function () {
+          document.getElementById("main-content").focus()
+          document
+            .getElementById("main-content")
+            .scrollIntoView({ behavior: "smooth" })
+        })
+
+      // Funcționalitate pentru bara de progres
+      function updateProgressBar() {
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight
+        const scrolled = (winScroll / height) * 100
+        document.getElementById("progress-bar").style.width = scrolled + "%"
+        document
+          .getElementById("progress-bar")
+          .setAttribute("aria-valuenow", scrolled)
+      }
+
+      window.addEventListener("scroll", updateProgressBar)
+      updateProgressBar()
+
+      // Demo interactiv
+      let currentScreen = 1
+      const totalScreens = 5
+
+      function showScreen(screenNumber) {
+        // Ascunde toate ecranele
+        document.querySelectorAll(".screen-content").forEach((screen) => {
+          screen.classList.remove("active")
+        })
+
+        // Arată ecranul selectat
+        document.getElementById("screen" + screenNumber).classList.add("active")
+
+        // Actualizează starea butoanelor
+        document.getElementById("prev-btn").disabled = screenNumber === 1
+        document.getElementById("next-btn").disabled =
+          screenNumber === totalScreens
+
+        // Actualizează punctele de paginare
+        document.querySelectorAll(".pagination-dot").forEach((dot, index) => {
+          dot.classList.toggle("active", index + 1 === screenNumber)
+        })
+
+        // Actualizează counterul 1/5
+        const counterElement = document.getElementById("section-counter")
+        if (counterElement) {
+          counterElement.textContent = `${screenNumber}/${totalScreens}`
+        }
+
+        currentScreen = screenNumber
+      }
+
+      function nextScreen() {
+        if (currentScreen < totalScreens) {
+          showScreen(currentScreen + 1)
+        }
+      }
+
+      function prevScreen() {
+        if (currentScreen > 1) {
+          showScreen(currentScreen - 1)
+        }
+      }
+
+      // Funcționalitate pentru întrebări frecvente
+      function toggleFaq(element) {
+        const answer = element.nextElementSibling
+        const isActive = answer.classList.contains("active")
+
+        // Închide toate răspunsurile
+        document.querySelectorAll(".faq-answer").forEach((item) => {
+          item.classList.remove("active")
+        })
+
+        // Actualizează toate iconițele
+        document.querySelectorAll(".faq-icon").forEach((icon) => {
+          icon.textContent = "+"
+        })
+
+        // Deschide răspunsul curent dacă a fost închis
+        if (!isActive) {
+          answer.classList.add("active")
+          element.querySelector(".faq-icon").textContent = "-"
+        }
+      }
+
+      // Simulare countdown pentru codul de verificare
+      function startCountdown() {
+        let timeLeft = 120 // 2 minute în secunde
+        const countdownElement = document.getElementById("countdown")
+
+        const countdownInterval = setInterval(() => {
+          const minutes = Math.floor(timeLeft / 60)
+          const seconds = timeLeft % 60
+
+          countdownElement.textContent = `${minutes}:${seconds
+            .toString()
+            .padStart(2, "0")}`
+
+          if (timeLeft <= 0) {
+            clearInterval(countdownInterval)
+            countdownElement.textContent = "0:00"
+          }
+
+          timeLeft--
+        }, 1000)
+      }
+
+      // Inițierea countdown-ului când se afișează ecranul 3
+      document
+        .querySelectorAll(".pagination-dot")[2]
+        .addEventListener("click", startCountdown)
+    </script>
+  </body>
+</html>
