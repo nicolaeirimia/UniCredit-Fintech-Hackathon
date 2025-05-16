@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Simulation Demo</title>
+    <style>
+        /* Base and Font Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: #e9ecef; /* Neutral light grey background for the page */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        /* Phone Mockup Styles */
+        .phone-container {
+            width: 340px;
+            height: 700px;
+            background-color: #1c1c1e; /* Dark phone body */
+            border-radius: 40px;
+            padding: 12px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF; /* Primary background from new scheme (white) */
+            border-radius: 28px;
+            overflow: hidden; /* Important: clips the notification if it animates from outside */
+            position: relative; /* This is the positioning context for the notification */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: #FFFFFF; /* Match screen background */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            position: relative;
+            z-index: 10;
+            flex-shrink: 0;
+            border-bottom: 1px solid #e0e0e0; /* Subtle separator */
+        }
+        
+        .time {
+            font-weight: 600;
+            color: #262626; /* Primary text color */
+        }
+        
+        .status-icons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-icons > div {
+            margin-left: 8px;
+            color: #666666; /* Secondary text / icon color */
+        }
+        
+        .notch {
+            /* This notch is visually part of the phone body, not the screen content area */
+            /* It's positioned relative to phone-container if needed, or phone-screen if it should overlay content */
+            /* For this demo, it's fine as is, visually part of the phone-screen's top bezel area */
+            position: absolute; /* Relative to phone-screen */
+            top: 0; /* Aligns with the very top of the phone-screen div */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px; /* Width of the notch */
+            height: 25px; /* Height of the notch */
+            background-color: #1c1c1e; /* Match phone body color */
+            border-bottom-left-radius: 12px; /* Rounded bottom corners */
+            border-bottom-right-radius: 12px;
+            z-index: 15; /* Above status bar but below popups like notification if they overlap */
+        }
+        
+        .content-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: #F8F9FA; /* Light grey for content background */
+            padding-top: 5px; /* Small padding to avoid content touching status bar/notch area if notch is purely visual */
+        }
+
+        .facebook-screen, .banking-screen {
+            padding: 0px;
+            height: 100%;
+        }
+        
+        .facebook-screen {
+            display: block; /* Facebook screen visible by default */
+            background-color: #F0F2F5; /* Typical Facebook background color */
+        }
+        
+        .banking-screen {
+            display: none; /* Banking screen hidden by default */
+            background-color: #FFFFFF; /* White background for banking app */
+        }
+        
+        /* Styles for Plăți Header (Banking Screen) */
+        .plati-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 15px 15px 15px;
+            background-color: #FFFFFF; /* White header */
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .plati-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #262626; /* Primary text */
+        }
+        
+        .header-icons svg {
+            width: 22px;
+            height: 22px;
+            margin-left: 15px;
+            fill: #666666; /* Secondary icon color */
+        }
+
+        /* Styles for Plată Nouă Section (Banking Screen) */
+        .plata-noua {
+            background-color: #E0F2F7; /* Lighter shade of primary accent #007A91 */
+            padding: 18px 15px;
+            margin: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .plata-noua-text h3 {
+            font-size: 16px;
+            font-weight: 500;
+            color: #004D5A; /* Darker shade for text on light teal */
+            margin-bottom: 5px;
+        }
+        
+        .plata-noua-text p {
+            font-size: 13px;
+            color: #006375; /* Mid shade for text on light teal */
+            line-height: 1.4;
+        }
+        
+        .plata-noua-icon img {
+            width: 55px;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        /* Styles for Banking Form Card (Banking Screen) */
+        .banking-form-card {
+            background-color: #FFFFFF; /* White card */
+            margin: 15px;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .banking-form-card h2 {
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 18px;
+            text-align: center;
+            color: #262626; /* Primary text */
+            line-height: 1.4;
+        }
+        
+        .banking-form-card .form-group {
+            margin-bottom: 22px;
+        }
+        
+        .banking-form-card .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666666; /* Secondary text for labels */
+            font-weight: 500;
+        }
+        
+        .banking-form-card .form-group input {
+            width: 100%;
+            border: none;
+            border-bottom: 1.5px solid #CCCCCC; /* Disabled/Neutral border */
+            background-color: transparent;
+            outline: none;
+            font-size: 16px;
+            color: #262626; /* Primary text for input */
+        }
+        
+        .banking-form-card .form-group input:focus {
+            border-bottom-color: #007A91; /* Accent color for focus */
+        }
+        
+        .banking-form-card .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            flex-grow: 1;
+        }
+        .btn:first-child {
+            margin-right: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #E0E0E0; /* Light grey, neutral */
+            color: #007A91; /* Accent text color */
+        }
+        .btn-cancel:hover {
+            background-color: #D0D0D0;
+        }
+        
+        .btn-primary {
+            background-color: #007A91; /* Accent color */
+            color: #FFFFFF; /* Text on accent */
+        }
+        .btn-primary:hover {
+            background-color: #006375; /* Darker accent for hover */
+        }
+
+        /* Styles for Scan & Pay Section (Banking Screen) */
+        .scan-pay-card {
+            background-color: #FFFFFF;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 18px 15px;
+            margin: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scan-pay-card .scan-pay-text h3 {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+        .scan-pay-card .scan-pay-text p {
+            font-size: 13px;
+            color: #666666;
+            line-height: 1.4;
+        }
+        .scan-pay-card .scan-pay-image img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        /* Styles for Shortcuts Header (Banking Screen) */
+        .shortcuts-header {
+            padding: 20px 15px 5px 15px;
+            text-align: left;
+        }
+        .shortcuts-header h4 {
+            font-size: 12px;
+            color: #666666; /* Secondary text */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Styles for Banking Shortcuts (Banking Screen) */
+        .banking-shortcuts {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px 20px 5px;
+        }
+        
+        .shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 75px;
+            text-decoration: none;
+        }
+        
+        .shortcut-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #E0F2F7; /* Light Accent */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .shortcut-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+        .shortcut-icon svg path, .shortcut-icon svg line, .shortcut-icon svg polyline, .shortcut-icon svg rect, .shortcut-icon svg circle {
+             stroke: #007A91; /* Accent color for icons */
+             fill: none;
+        }
+        .shortcut-icon .fill-icon path { /* If any icon needs fill */
+            fill: #007A91;
+            stroke: none;
+        }
+
+        .shortcut-text {
+            font-size: 11px;
+            text-align: center;
+            color: #262626; /* Primary text */
+            font-weight: 500;
+            line-height: 1.3;
+        }
+        
+        /* Bottom Navigation Styles */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background-color: #FFFFFF; /* White nav background */
+            border-top: 1px solid #e0e0e0;
+            position: sticky; /* Sticks to the bottom of .phone-screen or .content-area if scrollable */
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #666666; /* Secondary text for inactive items */
+            text-decoration: none;
+        }
+        .nav-item.active span {
+             color: #007A91; /* Accent color for active text */
+        }
+        .nav-item.active .nav-icon {
+             stroke: #007A91; /* Accent color for active icon stroke */
+        }
+         .nav-item.active .wallet-icon { /* Special case for filled wallet */
+            fill: #007A91 !important; /* Accent color for active filled icon */
+            stroke: none !important;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            stroke: #666666; /* Default icon stroke */
+        }
+        .nav-icon path, .nav-icon circle, .nav-icon line, .nav-icon polyline {
+            stroke: inherit;
+            fill: none;
+        }
+        .wallet-icon { /* For the filled wallet icon */
+             fill: #666666; /* Default fill for wallet */
+             stroke: none;
+        }
+
+        /* Phishing Test Result Box (Banking Screen) */
+        .phishing-test {
+            background-color: #FFFFFF;
+            padding: 25px 20px;
+            margin: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .phishing-test h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #F26808; /* Warning color */
+        }
+        
+        .phishing-test p {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #262626; /* Primary text */
+        }
+        .phishing-test .form-actions {
+             justify-content: center;
+        }
+        .phishing-test .btn-primary { /* Button in phishing result */
+            background-color: #007A91; /* Accent color */
+            color: #FFFFFF;
+        }
+        .phishing-test .btn-primary:hover {
+            background-color: #006375;
+        }
+        .banking-form-card .form-group input.error { /* Style for error input */
+            border-bottom-color: #D73928; /* Negative color */
+        }
+
+
+        /* Notification Banner Styles */
+        .notification-banner {
+            position: absolute; /* Now relative to .phone-screen */
+            top: 44px; /* Position below the status bar */
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 20px); /* Adjust width to fit nicely within phone-screen padding */
+            max-width: 300px; /* Max width remains useful */
+            background-color: #262626; /* Dark background for notification */
+            color: #FFFFFF; /* Light text on dark background */
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Softer shadow */
+            z-index: 200; /* High z-index to be on top of other .phone-screen content */
+            display: none;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { top: 0px; opacity: 0; transform: translate(-50%, -100%); } /* Starts above the status bar */
+            to { top: 44px; opacity: 1; transform: translate(-50%, 0); } /* Slides down to below status bar */
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            margin-right: 10px;
+            overflow: hidden;
+            background-color: #FFFFFF; /* White background for icon container */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+        
+        .notification-app {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+        .notification-message {
+            font-size: 13px;
+        }
+
+        /* Facebook Post Styles */
+        .profile-post {
+            background-color: #FFFFFF; /* White background for posts */
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #e0e0e0; /* Placeholder background */
+            overflow: hidden;
+        }
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-name {
+            font-weight: bold;
+            color: #262626; /* Primary text */
+        }
+        
+        .post-time {
+            font-size: 12px;
+            color: #666666; /* Secondary text */
+        }
+        
+        .profile-menu {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 20px;
+            color: #666666; /* Secondary text */
+        }
+        
+        .post-content {
+            margin-bottom: 10px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #262626; /* Primary text */
+        }
+        
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .post-image img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #e0e0e0; /* Separator */
+            padding-top: 8px;
+        }
+        
+        .action-button {
+            display: flex;
+            align-items: center;
+            color: #606770; /* Standard Facebook action color */
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+        }
+         .action-button:hover {
+            background-color: #F0F2F5; /* Light hover for actions */
+        }
+        
+        .action-button svg {
+            margin-right: 6px;
+            stroke: #606770; /* Match text color */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="phone-screen">
+            <div class="notch"></div>
+            <div class="status-bar">
+                <div class="time">13:45</div>
+                <div class="status-icons">
+                    <div class="wifi">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                        </svg>
+                    </div>
+                    <div class="signal">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0.5"> <path d="M1.329,12.329a1,1,0,0,1,1.414-1.414l3.277,3.276A1,1,0,0,1,6,15.606V4A1,1,0,0,1,7,3H9a1,1,0,0,1,1,1V15.606a1,1,0,0,1-.02.145l3.277-3.276a1,1,0,0,1,1.414,1.414l-4.019,4.019a2,2,0,0,1-2.828,0Z" transform="translate(2.961 3.98) rotate(45 8.019 8.02)"/>
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                             <path d="M21 1h-6.31l-.95-2h-3.48l-.95 2H3v2l4.7 16h8.6L21 3V1zm-3.69 2l.64 2H6.05l.64-2h10.62zM7.17 19L5.5 5h13l-1.67 14H7.17z"/> <path d="M22.707 19.293l-4-4A1 1 0 0 0 18 15V6a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v9a1 1 0 0 0 .293.707l-4 4a1 1 0 0 0 1.414 1.414L13 19.414V22a1 1 0 0 0 2 0v-2.586l2.293 2.293a1 1 0 0 0 1.414-1.414zM3 21.001h2v-3H3v3zm4 0h2v-7H7v7zm4 0h2v-11h-2v11z"/>
+                        </svg>
+                    </div>
+                    <div class="battery" style="font-weight: 500; display: flex; align-items: center;">78%&nbsp;
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="7" width="18" height="10" rx="1.5" ry="1.5"></rect>
+                            <line x1="22" y1="10.5" x2="22" y2="13.5"></line>
+                             <rect x="4" y="9" width="12" height="6" rx="0.5" ry="0.5" fill="currentColor"></rect>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="notification-banner" id="notification">
+                <div class="notification-content">
+                    <div class="notification-icon">
+                        <img src="logo_unic.png" alt="Bank Logo" onerror="this.src='https://placehold.co/30x30/CCCCCC/999999?text=Icon'">
+                    </div>
+                    <div class="notification-text">
+                        <div class="notification-app">Unicredit Bank</div>
+                        <div class="notification-message">Ai primit 1000 de lei!</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="facebook-screen" id="facebook-screen">
+                    <div class="profile-post">
+                        <div class="profile-header">
+                            <div class="profile-pic">
+                                <img src="AI_1.png" alt="Profile picture" onerror="this.src='https://placehold.co/40x40/E0E0E0/B0B0B0?text=User'">
+                            </div>
+                            <div>
+                                <div class="profile-name">Grandson</div>
+                                <div class="post-time">1h</div>
+                            </div>
+                            <div class="profile-menu">•••</div>
+                        </div>
+                        <div class="post-content">
+                            Enjoying the day out! This is a sample post to show how the Facebook screen might look.
+                        </div>
+                        <div class="post-image">
+                            <img src="AI_1.png" alt="Post image" onerror="this.src='https://placehold.co/300x200/CCCCCC/999999?text=Image+Not+Found'">
+                        </div>
+                        <div class="post-actions">
+                            <div class="action-button">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                <span>Like</span>
+                            </div>
+                            <div class="action-button">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                <span>Comment</span>
+                            </div>
+                            <div class="action-button">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                <span>Share</span>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="profile-post"> <div class="profile-header">
+                            <div class="profile-pic">
+                                <img src="https://placehold.co/40x40/AED581/33691E?text=Friend" alt="Profile picture" onerror="this.src='https://placehold.co/40x40/E0E0E0/B0B0B0?text=User'">
+                            </div>
+                            <div>
+                                <div class="profile-name">Another Friend</div>
+                                <div class="post-time">3h</div>
+                            </div>
+                            <div class="profile-menu">•••</div>
+                        </div>
+                        <div class="post-content">
+                            Just sharing some thoughts on the current state of technology. It's amazing how far we've come! What are your predictions for the next 5 years? #tech #future
+                        </div>
+                        <div class="post-actions">
+                             <div class="action-button">Like</div> <div class="action-button">Comment</div> <div class="action-button">Share</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="banking-screen" id="banking-screen">
+                    <div class="plati-header">
+                        <h2>Plăți</h2>
+                        <div class="header-icons">
+                            <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M11 15h2v2h-2v-2zm0-8h2v6h-2V7zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path></svg>
+                        </div>
+                    </div>
+                    
+                    <div class="plata-noua">
+                        <div class="plata-noua-text">
+                            <h3>Plată nouă</h3>
+                            <p>Către un beneficiar, un șablon sau o plată în valută</p>
+                        </div>
+                        <div class="plata-noua-icon">
+                            <img src="https://placehold.co/70x50/A0D2DB/004D5A?text=Wallet&font=roboto" alt="Wallet Icon" onerror="this.src='https://placehold.co/70x50/CCCCCC/999999?text=Icon'">
+                        </div>
+                    </div>
+                    
+                    <div class="banking-form-card" id="form-step-1">
+                        <h2>Pentru primirea banilor introduceți datele!</h2>
+                        <div class="form-group">
+                            <label for="card-last-4" style="padding: 0px;">Introdu ultimele 4 cifre ale cardului tău</label>
+                            <input type="text" id="card-last-4" name="card-last-4" inputmode="numeric" pattern="[0-9]*" maxlength="4">
+                        </div>
+                        <div class="form-group">
+                            <label for="card-pin" style="padding: 0px;">Introdu PIN-ul cardului tău</label>
+                            <input type="password" id="card-pin" name="card-pin" inputmode="numeric" pattern="[0-9]*" maxlength="4">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-cancel">Anulează</button>
+                            <button type="button" class="btn btn-primary" id="continue-btn">Continuă</button>
+                        </div>
+                    </div>
+                    
+                    <div class="banking-form phishing-test" id="phishing-result" style="display: none;">
+                        <h2>Acesta a fost un test impotriva phishingului!</h2>
+                        <p>Pentru a evita ulterioarele pierderi de informații bancare treceți acum un tutorial pentru securitatea utilizatorului.</p>
+                        <div class="form-actions" style="justify-content: center;">
+                            <button type="button" class="btn btn-primary" id="restart-btn" onclick="window.location.href='https://www.unicredit.ro/ro/persoane-fizice/digital/tutoriale/tutoriale-mobilebanking.html'">Am înțeles</button>
+                        </div>
+                    </div>
+                    
+                    <div class="shortcuts-header">
+                        <h4>Scurtături Plăți</h4>
+                    </div>
+                    <div class="banking-shortcuts">
+                        <div class="shortcut">
+                            <div class="shortcut-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+                            </div>
+                            <div class="shortcut-text">SCHIMB</div>
+                        </div>
+                        <div class="shortcut">
+                            <div class="shortcut-icon">
+                               <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="8" y1="12" x2="16" y2="12"></line><line x1="12" y1="8" x2="12" y2="16"></line></svg>
+                            </div>
+                            <div class="shortcut-text">PLĂTI</div>
+                        </div>
+                        <div class="shortcut">
+                            <div class="shortcut-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                            </div>
+                            <div class="shortcut-text">MODELE</div>
+                        </div>
+                        <div class="shortcut">
+                            <div class="shortcut-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                            </div>
+                            <div class="shortcut-text">OFERTE</div>
+                        </div>
+                    </div>
+                </div> </div> <div class="bottom-nav">
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Acasă</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    <span>Statusuri</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <svg class="nav-icon wallet-icon" viewBox="0 0 24 24"><path d="M21 6H3C2.44772 6 2 6.44772 2 7V17C2 17.5523 2.44772 18 3 18H21C21.5523 18 22 17.5523 22 17V7C22 6.44772 21.5523 6 21 6ZM20 16H4V8H20V16ZM6 12H10V14H6V12Z"></path></svg>
+                    <span>Plăți</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                    <span>Oferte</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                    <span>Mai mult</span>
+                </a>
+            </div>
+        </div> </div> <script>
+        // Ensure DOM is fully loaded before attaching event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const notificationElement = document.getElementById('notification');
+            const facebookScreen = document.getElementById('facebook-screen');
+            const bankingScreen = document.getElementById('banking-screen');
+            const continueBtn = document.getElementById('continue-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const cardLastFourInput = document.getElementById('card-last-4');
+            const cardPinInput = document.getElementById('card-pin');
+            const formStep1 = document.getElementById('form-step-1');
+            const phishingResult = document.getElementById('phishing-result');
+            const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+
+            // Show notification after a delay
+            setTimeout(() => {
+                if (notificationElement) {
+                    notificationElement.style.display = 'block';
+                }
+            }, 2000); // 2-second delay for notification
+            
+            // Make notification clickable
+            if (notificationElement) {
+                notificationElement.addEventListener('click', () => {
+                    if (facebookScreen) facebookScreen.style.display = 'none';
+                    if (bankingScreen) bankingScreen.style.display = 'block';
+                    notificationElement.style.display = 'none';
+
+                    // Ensure the "Plăți" nav item is active when switching to banking screen
+                    navItems.forEach(i => i.classList.remove('active'));
+                    // Fallback if :contains is not supported or for better practice:
+                    navItems.forEach(item => {
+                        const span = item.querySelector('span');
+                        if (span && span.textContent === 'Plăți') {
+                            item.classList.add('active');
+                        }
+                    });
+
+                });
+            }
+            
+            // Continue button in the banking form
+            if (continueBtn) {
+                continueBtn.addEventListener('click', () => {
+                    const cardLastFour = cardLastFourInput ? cardLastFourInput.value : '';
+                    const cardPin = cardPinInput ? cardPinInput.value : '';
+                    
+                    // Reset error states
+                    if(cardLastFourInput) cardLastFourInput.classList.remove('error');
+                    if(cardPinInput) cardPinInput.classList.remove('error');
+
+                    let isValid = true;
+                    if (cardLastFour.trim().length === 0) {
+                        if(cardLastFourInput) cardLastFourInput.classList.add('error');
+                        isValid = false;
+                    }
+                    if (cardPin.trim().length === 0) {
+                        if(cardPinInput) cardPinInput.classList.add('error');
+                        isValid = false;
+                    }
+
+                    if (isValid) {
+                        if (formStep1) formStep1.style.display = 'none';
+                        if (phishingResult) phishingResult.style.display = 'block';
+                    }
+                });
+            }
+
+            // Reset error class on input
+            [cardLastFourInput, cardPinInput].forEach(inputElement => {
+                if (inputElement) {
+                    inputElement.addEventListener('input', () => {
+                        inputElement.classList.remove('error');
+                    });
+                }
+            });
+            
+            // Restart button in phishing result
+            if (restartBtn) {
+                restartBtn.addEventListener('click', () => {
+                    if (phishingResult) phishingResult.style.display = 'none';
+                    if (formStep1) formStep1.style.display = 'block';
+                    if (cardLastFourInput) cardLastFourInput.value = '';
+                    if (cardPinInput) cardPinInput.value = '';
+                    if (cardLastFourInput) cardLastFourInput.classList.remove('error');
+                    if (cardPinInput) cardPinInput.classList.remove('error');
+                });
+            }
+
+            // Active state for bottom navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault(); 
+                    navItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Example: Add logic here to switch screens based on nav item clicked
+                    const clickedItemText = item.querySelector('span')?.textContent;
+                    if (clickedItemText === 'Plăți') {
+                        if (facebookScreen) facebookScreen.style.display = 'none';
+                        if (bankingScreen) bankingScreen.style.display = 'block';
+                    } else if (clickedItemText === 'Acasă') {
+                        // Potentially switch to Facebook screen or a "Home" screen if you add one
+                        if (facebookScreen) facebookScreen.style.display = 'block';
+                        if (bankingScreen) bankingScreen.style.display = 'none';
+                    }
+                    // Add more conditions for other nav items if needed
+                });
+            });
+        });
+    </script>
+</body>
+</html>
