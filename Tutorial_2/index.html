@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Autentificare în aplicația Mobile Banking - UniCredit</title>
+    <link rel="stylesheet" href="node_modules/boxicons/css/boxicons.min.css" />
+    <style>
+      .nav-item-conteiner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .icon {
+        max-height: 30px;
+      }
+
+      .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        border-bottom: 1px solid #ddd;
+        background: #fff;
+        font-family: Arial, sans-serif;
+      }
+
+      .site-nav {
+        display: flex;
+        gap: 20px;
+      }
+
+      .menu-icon {
+        display: none;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .logo {
+          height: 30px !important;
+        }
+
+        .site-nav {
+          display: none;
+          flex-direction: column;
+          position: absolute;
+          top: 60px;
+          right: 20px;
+          background: #fff;
+          border: 1px solid #ddd;
+          padding: 10px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+        }
+
+        .menu-icon {
+          display: block;
+        }
+
+        .menu-toggle-checkbox:checked ~ .site-nav {
+          display: flex;
+        }
+
+        .icon {
+          max-height: 25px;
+        }
+      }
+
+      .site-nav a,
+      .header-actions a,
+      .header-actions button {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+        color: #000;
+        font-size: 14px;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 20px;
+      }
+
+      .login {
+        color: #02978c;
+      }
+      .screen-content img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      :root {
+        --unicredit-blue: #007a91;
+        --unicredit-red: #dd0000;
+        --light-gray: #f5f5f5;
+        --medium-gray: #e0e0e0;
+        --dark-gray: #333333;
+        --white: #ffffff;
+      }
+
+      html {
+        font-size: 16px;
+      }
+
+      @media (min-width: 768px) {
+        html {
+          font-size: 18px;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        html {
+          font-size: 20px;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        color: var(--dark-gray);
+        background-color: var(--white);
+        line-height: 1.6;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .sticky-header-wrapper {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: var(--white);
+        margin: 0px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+
+      #skip-to-content {
+        padding: 0;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        border: 2px solid var(--unicredit-blue);
+        background-color: white;
+        color: var(--unicredit-blue);
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease-in-out;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      #skip-to-content.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #skip-to-content i {
+        font-size: 24px;
+      }
+
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .logo {
+        height: 40px;
+      }
+
+      main {
+        padding: 2rem 0;
+      }
+
+      h1 {
+        color: var(--unicredit-blue);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        max-width: 800px;
+      }
+
+      h2 {
+        color: var(--unicredit-blue);
+        margin: 1.5rem 0 1rem;
+        font-size: 1.5rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+
+      .steps-container {
+        margin: 2rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .step {
+        background-color: #f8f5f5;
+        border-left: 3px solid var(--unicredit-blue);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .step-number {
+        background-color: var(--unicredit-blue);
+        color: #fff;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .step-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+      }
+
+      .step-content {
+        display: flex;
+        align-items: stretch;
+        gap: 20px;
+      }
+
+      .step-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: auto 0;
+      }
+
+      .step-text p {
+        margin-bottom: 0.75rem;
+        color: #555;
+        line-height: 1.6;
+      }
+
+      .download-options ul,
+      .step-text ul {
+        padding-left: 1.5rem;
+        color: #555;
+      }
+
+      .download-options ul li::before,
+      .step-text ul li::before {
+        content: "•";
+        color: #0096a1;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+
+      .step-media {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+      }
+
+      .step-image {
+        max-height: 400px;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      @media (min-width: 768px) {
+        .step-content {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+
+        .step-text,
+        .step-media {
+          flex: 1;
+        }
+      }
+
+      .tip {
+        background-color: var(--light-gray);
+        border-left: 4px solid var(--unicredit-blue);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .tip-title {
+        font-weight: bold;
+        color: var(--unicredit-blue);
+        margin-bottom: 0.5rem;
+      }
+
+      .important {
+        background-color: #ffebee;
+        border-left: 4px solid var(--unicredit-red);
+      }
+
+      .store-btn {
+        min-width: 150px;
+      }
+
+      .btn {
+        background-color: var(--unicredit-blue);
+        color: var(--white);
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s;
+        background-color: var(--unicredit-blue);
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+      }
+
+      .btn:hover {
+        background-color: --unicredit-blue;
+      }
+
+      .btn:focus {
+        background-color: #007a91;
+        outline: 3px solid #66a3d2;
+        outline-offset: 2px;
+      }
+
+      .interactive-demo {
+        margin: 2rem 0;
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+      }
+
+      .phone-frame {
+        max-width: 300px;
+        margin: 0 auto;
+        border: 10px solid var(--dark-gray);
+        border-radius: 36px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .phone-screen {
+        background-color: var(--white);
+        padding: 1rem;
+        min-height: 500px;
+      }
+
+      .screen-content {
+        display: none;
+      }
+
+      .screen-content.active {
+        display: block;
+      }
+
+      .app-header {
+        background-color: var(--unicredit-blue);
+        color: var(--white);
+        padding: 1rem;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--medium-gray);
+        border-radius: 4px;
+      }
+
+      .form-input:focus {
+        outline: 2px solid var(--unicredit-blue);
+        border-color: var(--unicredit-blue);
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .section-counter {
+        font-weight: bold;
+        letter-spacing: 0.3ch;
+        font-size: 22px;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .pagination-dot {
+        width: 12px;
+        height: 12px;
+        background-color: var(--medium-gray);
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .pagination-dot.active {
+        background-color: var(--unicredit-blue);
+      }
+
+      .app-footer {
+        background-color: var(--light-gray);
+        padding: 1rem;
+        text-align: center;
+        border-radius: 0 0 8px 8px;
+        margin-top: 1rem;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border-radius: 8px 8px 0 0;
+        background-color: var(--white);
+        color: var(--dark-gray);
+        font-size: 0.9rem;
+        border-top: 1px solid var(--medium-gray);
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .footer-link {
+        text-decoration: none;
+        color: black;
+      }
+
+      .footer-link:hover {
+        text-decoration: underline;
+      }
+
+      .progress-container {
+        width: 100%;
+        background-color: var(--medium-gray);
+        border-radius: 4px;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: var(--unicredit-blue);
+        border-radius: 4px;
+        width: 0;
+        transition: width 0.3s;
+        position: sticky;
+      }
+
+      .faq {
+        margin: 2rem 0;
+      }
+
+      .faq-item {
+        border-bottom: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s ease;
+      }
+
+      .faq-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .faq-question {
+        background: transparent;
+        padding: 1rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        color: #333;
+        transition: color 0.3s;
+      }
+
+      .faq-question:hover {
+        color: var(--unicredit-blue);
+      }
+
+      .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        padding: 0 0;
+        color: #555;
+        font-size: 0.95rem;
+      }
+
+      .faq-answer.active {
+        padding: 0.5rem 0 1rem 0;
+        max-height: 500px;
+      }
+
+      .faq-icon {
+        color: var(--unicredit-blue);
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-left: 1rem;
+      }
+
+      .faq-answer p,
+      .faq-answer ul {
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
+      }
+
+      .faq-answer ul {
+        list-style: none;
+        padding-left: 1.5rem;
+      }
+
+      .faq-answer ul li::before {
+        content: "•";
+        color: var(--unicredit-blue);
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+      }
+
+      .faq-answer.active {
+        padding: 1rem 1.5rem;
+        max-height: 500px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      a:focus,
+      button:focus,
+      input:focus,
+      [tabindex]:focus {
+        outline: 3px solid #66a3d2;
+        outline-offset: 2px;
+      }
+
+      .bx {
+        font-size: 20px;
+      }
+
+      #prev-btn,
+      #next-btn {
+        border-radius: 50px;
+        height: 50px;
+        width: 50px;
+        padding: 0px !important;
+      }
+
+      .first-part {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .first-part img {
+        width: 80%;
+        max-width: 250px;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        border-radius: 12px;
+      }
+
+      .first-part div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      @media (min-width: 768px) {
+        .first-part {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          text-align: left;
+          gap: 2rem;
+        }
+
+        .first-part img {
+          width: 250px;
+          max-width: 250px;
+        }
+      }
+
+      @media (max-width: 800px) {
+        .store-buttons {
+          flex-direction: column;
+        }
+      }
+      .store-buttons,
+      .variant-buttons {
+        display: flex;
+        gap: 1rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .store-btn,
+      .variant-buttons .btn {
+        background-color: var(--unicredit-blue);
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+        flex: 1;
+        text-align: center;
+      }
+
+      .store-btn:hover {
+        background-color: #005f6b;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sticky-header-wrapper">
+      <header class="site-header">
+        <div class="logo">
+          <img
+            src="/images/unicredit_logo.png"
+            alt="Logo UniCredit"
+            class="logo"
+          />
+        </div>
+        <nav class="site-nav">
+          <a href="#" class="nav-item-conteiner"
+            ><img class="icon" src="/images/ic1.png" /> Contacts</a
+          >
+          <a href="#" class="nav-item-conteiner"
+            ><img class="icon" src="/images/ic2.png" /> About Us</a
+          >
+          <a href="#" class="nav-item-conteiner"
+            ><img class="icon" src="/images/ic3.png" /> Search</a
+          >
+        </nav>
+        <div class="header-actions">
+          <a href="#" class="nav-item-conteiner login-container"
+            ><img class="icon" src="/images/ic4.png" /> Login</a
+          >
+          <button class="nav-item-conteiner">
+            <img class="icon" src="/images/ic5.png" /> Menu
+          </button>
+        </div>
+      </header>
+
+      <nav>
+        <button class="btn" id="skip-to-content" onclick="scrollToTop()">
+          <i class="bx bx-chevron-up"></i>
+        </button>
+      </nav>
+
+      <div class="progress-container">
+        <div
+          class="progress-bar"
+          id="progress-bar"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        ></div>
+      </div>
+    </div>
+
+    <main id="main-content">
+      <div class="first-part">
+        <div>
+          <h1>Creează-ți contul de economii</h1>
+          <p>
+            Bine ai venit! În acest tutorial îți arătăm cât de simplu este să
+            deschizi un cont de economii direct din aplicația de Mobile Banking.
+            Fără drumuri la bancă, doar câteva atingeri pe telefon și banii tăi
+            sunt în siguranță, gata să-i folosești oricând ai nevoie. Ești
+            pregătit să începem?
+          </p>
+        </div>
+        <img src="/images/first-image-uni.png" class="first-image" />
+      </div>
+
+      <div class="steps-container">
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">1</div>
+            <h2 class="step-title">
+              Deschide aplicația UniCredit Mobile Banking și autentifică-te.
+            </h2>
+          </div>
+
+          <div class="step-content">
+            <div class="step-text">
+              <p>
+                <strong
+                  >Înainte de a începe, asigurați-vă că aveți aplicația
+                  instalată pe dispozitivul dumneavoastră.</strong
+                >
+              </p>
+
+              <p>
+                Pentru descărcare, alegeți una dintre platformele disponibile:
+              </p>
+              <div class="store-buttons">
+                <a
+                  href="https://apps.apple.com"
+                  target="_blank"
+                  class="btn store-btn"
+                  >App Store</a
+                >
+                <a
+                  href="https://play.google.com/store"
+                  target="_blank"
+                  class="btn store-btn"
+                  >Google Play</a
+                >
+              </div>
+              <p>După finalizarea instalării:</p>
+
+              <p>
+                ✔️ Localizați aplicația
+                <strong>UniCredit Mobile Banking</strong> pe ecranul
+                telefonului.
+              </p>
+
+              <p>✔️ Apăsați pe iconiță pentru a deschide aplicația.</p>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/pas1.png"
+                alt="Ecran de descărcare a aplicației Mobile Banking"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">2</div>
+            <h2 class="step-title">
+              Accesează secțiunea Oferte din bara de jos.
+            </h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>
+                ✔️ Deschide aplicația <strong>UniCredit Mobile Banking</strong>.
+              </p>
+              <p>✔️ Privește în <strong>bara de jos</strong> a ecranului.</p>
+              <p>
+                ✔️ Apasă pe <strong>Oferte</strong> pentru a vedea toate
+                produsele disponibile.
+              </p>
+              <p>
+                ✔️ Caută și selectează <strong>Cont de Economii</strong> pentru
+                a continua.
+              </p>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/passs2.png"
+                alt="Ecran de descărcare a aplicației Mobile Banking"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">3</div>
+            <h2 class="step-title">
+              Selectează Cont de Economii din categoria „Produse”
+            </h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>✔️ Intră în secțiunea <strong>Oferte</strong>.</p>
+              <p>✔️ Găsește categoria <strong>Produse</strong>.</p>
+              <p>✔️ Caută și apasă pe <strong>Cont de Economii</strong>.</p>
+              <p>✔️ Vezi detaliile contului și continuă cu deschiderea lui.</p>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/passs3.png"
+                alt="Ecran de descărcare a aplicației Mobile Banking"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">4</div>
+            <h2 class="step-title">
+              Selectează contul suport (de exemplu, contul tău curent).
+            </h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>✔️ Alege <strong>Contul de Economii</strong> din listă.</p>
+              <p>
+                ✔️ Selectează <strong>contul curent</strong> din care vei
+                alimenta economiile.
+              </p>
+              <p>✔️ Continuă către pașii finali.</p>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/passs4.png"
+                alt="Ecran pas4"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">5</div>
+            <h2 class="step-title">
+              Citește și acceptă termenii și condițiile (bifează cele două
+              opțiuni).
+            </h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>✔️ Citește <strong>termenii și condițiile</strong> afișate.</p>
+              <p>✔️ Bifează cele <strong>două căsuțe</strong> de confirmare.</p>
+              <p>✔️ Continuă procesul de deschidere a contului.</p>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/passs5.png"
+                alt="Ecran pas5"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-header">
+            <div class="step-number">6</div>
+            <h2 class="step-title">
+              Pentru a continua activarea, trebuie să confirmi numărul tău de
+              telefon.
+            </h2>
+          </div>
+          <div class="step-content">
+            <div class="step-text">
+              <p>
+                ✔️ Vei primi un <strong>cod prin SMS</strong> pe telefonul tău.
+              </p>
+              <p>✔️ Introdu codul primit în aplicație.</p>
+              <p>✔️ Confirmă pentru a finaliza activarea contului.</p>
+            </div>
+
+            <div class="step-media">
+              <img
+                src="/images/passs6.png"
+                alt="Ecran pas6"
+                class="step-image"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="tip">
+        <div class="tip-title">Sfat util</div>
+        <p>
+          Verifică atent datele introduse și contul suport selectat înainte de a
+          confirma, pentru a evita corecții ulterioare.
+        </p>
+      </div>
+
+      <div class="tip important">
+        <div class="tip-title">Important!</div>
+        <p>
+          Nu împărtășiți niciodată credențialele de autentificare cu nimeni,
+          inclusiv angajații UniCredit. Banca nu va solicita niciodată datele
+          dumneavoastră de autentificare prin telefon, email sau mesaje.
+        </p>
+      </div>
+
+      <h2>Întrebări frecvente</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Pot deschide mai multe conturi de economii în aplicație?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>
+              Da, poți deschide mai multe conturi de economii, fiecare cu un
+              obiectiv diferit, direct din aplicația de Mobile Banking.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Pot seta transferuri automate către contul de economii din aplicația
+            mobilă?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>
+              Da. Poți activa o plată programată care transferă automat o sumă
+              stabilită de tine din contul curent în contul de economii, fără
+              comisioane. unicredit.ro
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Există comisioane pentru deschiderea sau administrarea contului de
+            economii?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>
+              Nu. Deschiderea, administrarea și închiderea contului de economii
+              sunt gratuite.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div>© 2025 UniCredit Bank. Toate drepturile rezervate.</div>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Asistență</a>
+        <a href="#" class="footer-link">Termeni și condiții</a>
+        <a href="#" class="footer-link">Politica de confidențialitate</a>
+      </div>
+    </footer>
+
+    <script>
+      function showVariant(variant) {
+        document.getElementById("variant-card").style.display =
+          variant === "card" ? "block" : "none"
+        document.getElementById("variant-code").style.display =
+          variant === "code" ? "block" : "none"
+      }
+
+      window.onscroll = function () {
+        const btn = document.getElementById("skip-to-content")
+        if (
+          document.body.scrollTop > 300 ||
+          document.documentElement.scrollTop > 300
+        ) {
+          btn.classList.add("visible")
+        } else {
+          btn.classList.remove("visible")
+        }
+      }
+
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
+      document
+        .getElementById("skip-to-content")
+        .addEventListener("click", function () {
+          document.getElementById("main-content").focus()
+          document
+            .getElementById("main-content")
+            .scrollIntoView({ behavior: "smooth" })
+        })
+
+      function updateProgressBar() {
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight
+        const scrolled = (winScroll / height) * 100
+        document.getElementById("progress-bar").style.width = scrolled + "%"
+        document
+          .getElementById("progress-bar")
+          .setAttribute("aria-valuenow", scrolled)
+      }
+
+      window.addEventListener("scroll", updateProgressBar)
+      updateProgressBar()
+
+      let currentScreen = 1
+      const totalScreens = 5
+
+      function showScreen(screenNumber) {
+        document.querySelectorAll(".screen-content").forEach((screen) => {
+          screen.classList.remove("active")
+        })
+
+        document.getElementById("screen" + screenNumber).classList.add("active")
+
+        document.getElementById("prev-btn").disabled = screenNumber === 1
+        document.getElementById("next-btn").disabled =
+          screenNumber === totalScreens
+
+        document.querySelectorAll(".pagination-dot").forEach((dot, index) => {
+          dot.classList.toggle("active", index + 1 === screenNumber)
+        })
+
+        const counterElement = document.getElementById("section-counter")
+        if (counterElement) {
+          counterElement.textContent = `${screenNumber}/${totalScreens}`
+        }
+
+        currentScreen = screenNumber
+      }
+
+      // function nextScreen() {
+      //   if (currentScreen < totalScreens) {
+      //     showScreen(currentScreen + 1)
+      //   }
+      // }
+
+      // function prevScreen() {
+      //   if (currentScreen > 1) {
+      //     showScreen(currentScreen - 1)
+      //   }
+      // }
+
+      function toggleFaq(element) {
+        const answer = element.nextElementSibling
+        const isActive = answer.classList.contains("active")
+
+        document.querySelectorAll(".faq-answer").forEach((item) => {
+          item.classList.remove("active")
+        })
+
+        document.querySelectorAll(".faq-icon").forEach((icon) => {
+          icon.textContent = "+"
+        })
+
+        if (!isActive) {
+          answer.classList.add("active")
+          element.querySelector(".faq-icon").textContent = "-"
+        }
+      }
+    </script>
+  </body>
+</html>
