@@ -1,0 +1,160 @@
+/* Pagination Component Styles */
+.component-section {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.component-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.component-title .icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.component-title h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 500;
+    color: #0277bd;
+}
+
+.pagination-display {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #0277bd;
+    border-radius: 4px;
+    padding: 40px;
+    max-width: 600px;
+    position: relative;
+}
+
+.mode-section {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.mode-section:last-child {
+    margin-bottom: 0;
+}
+
+.mode-label {
+    position: absolute;
+    left: -95px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.pagination-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.pagination-examples.dark {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.pagination-row {
+    display: flex;
+    justify-content: center;
+}
+
+/* Simple Pagination Styles */
+.pagination-simple {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.page-nav {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #0277bd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+.page-nav:hover {
+    background-color: #01579b;
+}
+
+.page-nav.active {
+    outline: 2px solid #0277bd;
+    outline-offset: 2px;
+}
+
+.current-page {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Numbered Pagination Styles */
+.pagination-numbered {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 5px;
+}
+
+.page-number {
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.page-number:hover {
+    background-color: rgba(2, 119, 189, 0.1);
+}
+
+.page-number.active {
+    background-color: #0277bd;
+    color: white;
+}
+
+.page-number.active.hover {
+    outline: 2px solid #01579b;
+    outline-offset: 1px;
+}
+
+/* Dark mode styling */
+.pagination-examples.dark .page-nav {
+    background-color: #0277bd;
+    color: white;
+}
+
+.pagination-examples.dark .page-number {
+    color: #333;
+}
+
+.pagination-examples.dark .page-number.active {
+    background-color: #0277bd;
+    color: white;
+}

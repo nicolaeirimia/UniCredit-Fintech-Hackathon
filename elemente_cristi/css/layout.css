@@ -1,0 +1,137 @@
+/* layout.css */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+}
+
+.header {
+    padding: var(--spacing-lg);
+    background-color: var(--primary);
+    color: white;
+    margin-bottom: var(--spacing-xl);
+}
+
+.header h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: bold;
+}
+
+.component-section {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    background-color: white;
+}
+
+.component-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.component-title h2 {
+    font-size: var(--font-size-lg);
+    color: var(--primary);
+}
+
+.component-title .icon {
+    color: var(--highlight);
+    margin-right: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+}
+
+.component-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.component-table th {
+    text-align: left;
+    padding: var(--spacing-sm);
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary-light);
+    color: var(--primary);
+}
+
+.component-table td {
+    padding: var(--spacing-md) var(--spacing-sm);
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.state-label {
+    font-weight: bold;
+    width: 120px;
+}
+
+.component-docs {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed var(--border-light);
+}
+
+.component-docs h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary);
+}
+
+.component-docs ul {
+    padding-left: var(--spacing-lg);
+}
+
+.component-docs li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.code-example {
+    background-color: var(--bg-light);
+    padding: var(--spacing-md);
+    border-radius: 4px;
+    margin-top: var(--spacing-md);
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+.toc {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 200px;
+    background-color: white;
+    padding: var(--spacing-md);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.toc h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary);
+}
+
+.toc ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.toc li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.toc a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s;
+    display: block;
+    padding: var(--spacing-xs);
+}
+
+.toc a:hover {
+    color: var(--primary);
+    background-color: var(--primary-light);
+    border-radius: 2px;
+}

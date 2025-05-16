@@ -1,0 +1,67 @@
+/* Radio Button Styles */
+.radio-container {
+    display: flex;
+    gap: 20px;
+}
+
+.radio-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-default {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: white;
+}
+
+.radio-active {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007A91;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: white;
+    position: relative;
+}
+
+.radio-active::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #007A91;
+}
+
+.radio-error {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #FF3B30;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: white;
+}
+
+.radio-label {
+    font-size: 14px;
+}
+
+.radio-wrapper.focused {
+    outline: 2px solid #007A91;
+    outline-offset: 2px;
+    border-radius: 4px;
+    padding: 3px;
+}
+
+.radio-wrapper.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

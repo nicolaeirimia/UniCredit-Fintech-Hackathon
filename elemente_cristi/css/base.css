@@ -1,0 +1,44 @@
+/* base.css */
+:root {
+    /* Color Variables */
+    --primary: #007A91;
+    --primary-light: #E6F4F7;
+    --error: #FF3B30;
+    --disabled: #E0E0E0;
+    --border-light: #CCCCCC;
+    --border-dark: #999999;
+    --text-primary: #1A1A1A;
+    --text-secondary: #666666;
+    --bg-white: #FFFFFF;
+    --bg-light: #F5F5F5;
+    --highlight: #9370DB;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Typography */
+    --font-family: 'Arial', sans-serif;
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 24px;
+    --font-size-xxl: 32px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    color: var(--text-primary);
+    background-color: var(--bg-white);
+    line-height: 1.5;
+}
