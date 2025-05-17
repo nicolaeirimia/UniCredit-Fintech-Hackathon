@@ -13,12 +13,13 @@
             --primary-text: #262626;   /* Text principal (negru/gri închis) */
             --secondary-text: #666666; /* Text secundar (gri) */
             --background-main: #FFFFFF;/* Fundal principal (alb) */
-            --background-content: #F8F9FA; /* Fundal pentru zona de conținut (gri deschis) */
+            --background-content-default: #F8F9FA; /* Fundal default pentru zona de conținut */
             --disabled-neutral: #CCCCCC;
             --button-cancel-bg: #E0E0E0;
             --positive: #2E8440;
             --warning: #F26808;
             --negative: #D73928;
+            --image-overlay-color: rgba(255, 255, 255, 0.85); /* Overlay pentru imagini de fundal */
         }
 
         * {
@@ -105,11 +106,47 @@
         .content-area {
             flex-grow: 1;
             overflow-y: auto;
-            background-color: var(--background-content);
+            background-color: var(--background-content-default); /* Fundal default */
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Aliniază butonul la partea de jos */
+            justify-content: space-between;
+            background-size: contain; /* Sau 'cover' în funcție de preferințe */
+            background-position: center center;
+            background-repeat: no-repeat;
+            position: relative; /* Pentru overlay */
         }
+        /* Stil pentru overlay peste imaginea de fundal */
+        .content-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--image-overlay-color);
+            z-index: 1; /* Se asigură că este sub conținutul efectiv */
+            opacity: 0; /* Inițial invizibil */
+            transition: opacity 0.3s ease-in-out;
+        }
+        .content-area.has-background::before {
+            opacity: 1; /* Devine vizibil când există un fundal */
+        }
+
+
+        /* Clase pentru imagini de fundal specifice ecranelor */
+        .content-area.bg-acasa {
+            background-image: url('https://storage.googleapis.com/generativeai-downloads/images/491194952_1035915385151322_6126279352416540995_n.png');
+        }
+        .content-area.bg-statistici {
+            background-image: url('https://storage.googleapis.com/generativeai-downloads/images/491190924_1053460656971257_2389165355828424716_n.png');
+        }
+        .content-area.bg-plati {
+            background-image: url('https://storage.googleapis.com/generativeai-downloads/images/496624467_666621856279142_4503384475867997441_n.png');
+        }
+        .content-area.bg-oferte {
+            background-image: url('https://storage.googleapis.com/generativeai-downloads/images/496624381_738386768752365_316736394687290445_n.png');
+        }
+
 
         /* Stiluri specifice paginii de tutorial */
         .tutorial-screen {
@@ -118,30 +155,32 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Centrează conținutul pe verticală inițial */
+            justify-content: center; 
             flex-grow: 1;
+            position: relative; /* Pentru a se asigura că conținutul este peste overlay */
+            z-index: 2;
         }
 
         .tutorial-header {
             width: 100%;
-            padding: 10px 0 20px 0; /* Spațiu pentru logo */
+            padding: 10px 0 20px 0; 
             text-align: center;
         }
 
         .tutorial-header img {
-            height: 25px; /* Ajustați dimensiunea logo-ului */
+            height: 25px; 
         }
 
         .tutorial-screen h1 {
             font-size: 22px;
             font-weight: 600;
             color: var(--primary-text);
-            margin-top: 20px; /* Spațiu după logo */
+            margin-top: 20px; 
             margin-bottom: 15px;
             line-height: 1.3;
         }
 
-        .tutorial-screen p {
+        .tutorial-screen p.screen-description { /* Clasa nouă pentru descrierea ecranului */
             font-size: 15px;
             color: var(--secondary-text);
             margin-bottom: 25px;
@@ -149,7 +188,7 @@
             max-width: 90%;
         }
         
-        .tutorial-screen .sub-instruction {
+        .tutorial-screen .sub-instruction { /* Textul pentru comenzi vocale */
             font-size: 14px;
             color: var(--primary-accent);
             font-weight: 500;
@@ -169,8 +208,8 @@
             width: 80%;
             max-width: 250px;
             transition: background-color 0.3s ease;
-            margin-top: auto; /* Împinge butonul în jos dacă e spațiu */
-            margin-bottom: 20px; /* Spațiu de la marginea de jos */
+            margin-top: auto; 
+            margin-bottom: 20px; 
         }
 
         .btn-tutorial:hover {
@@ -186,12 +225,14 @@
             font-size: 14px;
             color: var(--secondary-text);
             margin-top: 15px;
-            height: 20px; /* Rezervă spațiu pentru a preveni saltul de layout */
+            min-height: 40px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        /* Stiluri pentru pop-up de permisiune microfon */
         .permission-popup {
-            display: none; /* Ascuns inițial */
+            display: none; 
             position: absolute;
             bottom: 0;
             left: 0;
@@ -200,7 +241,7 @@
             color: white;
             padding: 20px;
             text-align: center;
-            z-index: 250; /* Peste alte elemente */
+            z-index: 250; 
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
         }
@@ -222,15 +263,15 @@
             background-color: #888;
         }
 
-
-        /* Bottom Navigation (doar pentru context vizual, nu funcțional în acest demo) */
         .bottom-nav-placeholder {
             display: flex;
             justify-content: space-around;
             padding: 10px 0;
             background-color: var(--background-main);
             border-top: 1px solid #e0e0e0;
-            flex-shrink: 0; /* Nu se micșorează */
+            flex-shrink: 0; 
+            position: relative; /* Pentru a se asigura că este peste overlay */
+            z-index: 2;
         }
         .nav-item-placeholder {
             display: flex;
@@ -249,8 +290,6 @@
             color: var(--primary-accent);
             stroke: var(--primary-accent);
         }
-
-
     </style>
 </head>
 <body>
@@ -269,34 +308,33 @@
                 </div>
             </div>
 
-            <div class="content-area">
-                <div class="tutorial-screen">
+            <div class="content-area" id="main-content-area">
+                <div class="tutorial-screen" id="current-screen-content">
                     <div class="tutorial-header">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/UniCredit_logo_2017.svg/2560px-UniCredit_logo_2017.svg.png" alt="Logo UniCredit" onerror="this.alt='Logo UniCredit'; this.src='https://placehold.co/150x30/007A91/FFFFFF?text=UniCredit&font=roboto';">
                     </div>
-                    <h1>Urmează să parcurgem un tutorial interactiv pentru utilizarea aplicației mobile</h1>
-                    <p class="sub-instruction" id="instruction-text">Pentru a continua, activați microfonul și alegeți o comandă vocală din meniul de mai jos.</p>
+                    <h1 id="screen-title">Tutorial Interactiv</h1>
+                    <p class="screen-description" id="screen-description-text">Urmează să parcurgem un tutorial interactiv pentru utilizarea aplicației mobile.</p>
+                    <p class="sub-instruction" id="voice-command-prompt">Pentru a continua, activați microfonul și alegeți o comandă vocală.</p>
                     <div id="microphone-status">Apasă "Continuă" pentru a începe.</div>
                     <button class="btn-tutorial" id="continue-tutorial-btn">Continuă</button>
                 </div>
 
                 <div class="bottom-nav-placeholder">
-                    <div class="nav-item-placeholder active">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                        <span>Acasă</span>
-                    </div>
-                    <div class="nav-item-placeholder">
+                    <div class="nav-item-placeholder active" data-tab="tutorial"> <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Acasă</span> </div>
+                    <div class="nav-item-placeholder" data-tab="statistici">
                         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 20V10M18 20V4M6 20V16"></path></svg> <span>Statistici</span>
                     </div>
-                    <div class="nav-item-placeholder">
+                    <div class="nav-item-placeholder" data-tab="plati">
                         <svg viewBox="0 0 24 24" fill="var(--secondary-text)" stroke-width="2"><path d="M21 6H3C2.44772 6 2 6.44772 2 7V17C2 17.5523 2.44772 18 3 18H21C21.5523 18 22 17.5523 22 17V7C22 6.44772 21.5523 6 21 6ZM20 16H4V8H20V16ZM6 12H10V14H6V12Z"></path></svg>
                         <span>Plăți</span>
                     </div>
-                    <div class="nav-item-placeholder">
+                    <div class="nav-item-placeholder" data-tab="oferte">
                         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                         <span>Oferte</span>
                     </div>
-                    <div class="nav-item-placeholder">
+                    <div class="nav-item-placeholder" data-tab="mai-mult">
                         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                         <span>Mai mult</span>
                     </div>
@@ -309,59 +347,196 @@
                 <button id="deny-mic-btn" class="deny">Refuză</button>
             </div>
 
-        </div> </div> <script>
+        </div> 
+    </div> 
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const continueTutorialBtn = document.getElementById('continue-tutorial-btn');
             const microphoneStatusDiv = document.getElementById('microphone-status');
-            const instructionText = document.getElementById('instruction-text');
+            const instructionTextEl = document.getElementById('voice-command-prompt'); // Elementul pentru instrucțiuni vocale
+            const screenTitleEl = document.getElementById('screen-title');
+            const screenDescriptionEl = document.getElementById('screen-description-text');
+            const mainContentArea = document.getElementById('main-content-area');
             const permissionPopup = document.getElementById('permission-popup');
             const allowMicBtn = document.getElementById('allow-mic-btn');
             const denyMicBtn = document.getElementById('deny-mic-btn');
 
             let speechSynthesis = window.speechSynthesis;
             let recognition;
-            // Flags to manage permission flow
             let microphonePermissionQueriedThisSession = false;
             let microphonePermissionGranted = false;
+            let isSpeaking = false; 
+            let currentUtterance = null; 
+            let utteranceTimeoutId = null; 
 
+            // Screen definitions
+            const screens = {
+                'tutorial': {
+                    title: "Tutorial Interactiv",
+                    description: "Urmează să parcurgem un tutorial interactiv pentru utilizarea aplicației mobile.",
+                    voicePrompt: "Pentru a continua, activați microfonul și alegeți o comandă vocală.",
+                    backgroundClass: '', // Fără fundal specific
+                    navText: "Tutorial" // Text pentru tab-ul de navigație (dacă e cazul)
+                },
+                'acasă': {
+                    title: "Pagina Principală",
+                    description: "Aici vedeți soldul total, conturile și cardurile dumneavoastră. Puteți spune 'Statistici', 'Plăți', 'Oferte' sau 'Mai mult'.",
+                    backgroundClass: 'bg-acasa',
+                    navText: "Acasă"
+                },
+                'statistici': {
+                    title: "Raport Financiar",
+                    description: "Aici puteți vedea un raport al încasărilor și cheltuielilor. Spuneți 'Acasă' pentru a reveni sau altă secțiune.",
+                    backgroundClass: 'bg-statistici',
+                    navText: "Statistici"
+                },
+                'plăți': {
+                    title: "Plăți",
+                    description: "Aici puteți efectua plăți noi, transferuri sau vedea facturile. Spuneți 'Acasă' sau altă secțiune.",
+                    backgroundClass: 'bg-plati',
+                    navText: "Plăți"
+                },
+                'oferte': {
+                    title: "Oferte",
+                    description: "Descoperiți aici ofertele și produsele noastre. Spuneți 'Acasă' sau altă secțiune.",
+                    backgroundClass: 'bg-oferte',
+                    navText: "Oferte"
+                },
+                'mai mult': {
+                    title: "Mai Mult",
+                    description: "Aici găsiți setări suplimentare și opțiuni de ajutor. Spuneți 'Acasă' sau altă secțiune.",
+                    backgroundClass: '',
+                    navText: "Mai mult"
+                }
+            };
+            let currentScreenKey = 'tutorial'; // Start with the tutorial screen
 
             const availableCommands = {
-                'acasă': 'Navighez la Acasă.',
-                'statistici': 'Navighez la Statistici.',
-                'plăți': 'Navighez la Plăți.',
-                'oferte': 'Navighez la Oferte.',
-                'mai mult': 'Navighez la Mai mult.',
-                'ajutor': 'Cum te pot ajuta?',
-                'repetă': () => speakInstruction(instructionText.textContent) // Use current instruction text
+                'acasă': () => navigateToScreen('acasă'),
+                'statistici': () => navigateToScreen('statistici'),
+                'plăți': () => navigateToScreen('plăți'),
+                'plati': () => navigateToScreen('plăți'), // Alias
+                'oferte': () => navigateToScreen('oferte'),
+                'mai mult': () => navigateToScreen('mai mult'),
+                'ajutor': () => speakInstruction('Cum te pot ajuta? Puteți naviga la Acasă, Statistici, Plăți, Oferte sau Mai mult.', true),
+                'repetă': () => speakInstruction(screens[currentScreenKey].description + " " + (screens[currentScreenKey].voicePrompt || ""), true)
             };
-
-            function speakInstruction(textToSpeak, callback) {
-                if (speechSynthesis.speaking) {
-                    // speechSynthesis.cancel(); // Optional: Cancel current speech if any
+            
+            function navigateToScreen(screenKey) {
+                if (!screens[screenKey]) {
+                    console.warn("Screen key not found:", screenKey);
+                    speakInstruction("Ecranul cerut nu a fost găsit.", true);
+                    return;
                 }
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = 'ro-RO';
-                utterance.onend = () => {
-                    if (callback) callback();
-                };
-                utterance.onerror = (event) => {
-                    console.error('SpeechSynthesisUtterance.onerror', event);
-                    microphoneStatusDiv.textContent = 'Eroare la redarea vocală.';
-                };
-                speechSynthesis.speak(utterance);
-            }
+                currentScreenKey = screenKey;
+                const screenData = screens[screenKey];
 
-            function initializeSpeechRecognition() {
-                // Check for browser support and initialize the recognition object
-                window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!window.SpeechRecognition) {
-                    microphoneStatusDiv.textContent = 'Recunoașterea vocală nu este suportată în acest browser.';
-                    speakInstruction('Recunoașterea vocală nu este suportată în acest browser.');
-                    continueTutorialBtn.disabled = true;
-                    return false; // Indicate that initialization failed
+                screenTitleEl.textContent = screenData.title;
+                screenDescriptionEl.textContent = screenData.description;
+                instructionTextEl.textContent = screenData.voicePrompt || "Rostiți o comandă pentru a naviga.";
+
+                // Update background
+                mainContentArea.className = 'content-area'; // Reset classes
+                if (screenData.backgroundClass) {
+                    mainContentArea.classList.add(screenData.backgroundClass);
+                    mainContentArea.classList.add('has-background');
+                } else {
+                    mainContentArea.classList.remove('has-background');
                 }
                 
-                if (!recognition) { // Initialize only if not already done
+                updateActiveTab(screenKey); // Update visual tab
+                // Speak the title and description of the new screen
+                speakInstruction(`${screenData.title}. ${screenData.description}`, true);
+            }
+
+
+            function cleanupUtterance(success = true) {
+                if (utteranceTimeoutId) {
+                    clearTimeout(utteranceTimeoutId);
+                    utteranceTimeoutId = null;
+                }
+                isSpeaking = false;
+                console.log(`TTS ${currentUtterance ? 'for "'+ currentUtterance.text.substring(0,20)+'"' : ''} ${success ? 'ended' : 'timed out/errored'}.`);
+                currentUtterance = null; 
+            }
+
+            function speakInstruction(textToSpeak, shouldListenAfter = false, callback) {
+                if (speechSynthesis.speaking || isSpeaking) {
+                    console.log("Cancelling existing/pending speech before new utterance.");
+                    speechSynthesis.cancel(); 
+                }
+                isSpeaking = true; 
+                microphoneStatusDiv.textContent = 'Vorbesc...';
+                
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                currentUtterance = utterance; 
+                utterance.lang = 'ro-RO';
+                
+                const proceedAfterSpeech = () => {
+                    setTimeout(() => {
+                        if (shouldListenAfter && microphonePermissionGranted) {
+                            startListening();
+                        }
+                        if (callback) callback();
+                    }, 300); 
+                };
+
+                utterance.onstart = () => {
+                    console.log("TTS utterance started: ", textToSpeak.substring(0,30));
+                    if (utteranceTimeoutId) clearTimeout(utteranceTimeoutId); 
+                    utteranceTimeoutId = setTimeout(() => {
+                        if (currentUtterance === utterance) { 
+                            console.warn("TTS utterance timed out. Manually cleaning up for: ", utterance.text.substring(0,30));
+                            speechSynthesis.cancel(); 
+                            cleanupUtterance(false);
+                            proceedAfterSpeech(); 
+                        }
+                    }, 10000); 
+                };
+
+                utterance.onend = () => {
+                    if (currentUtterance === utterance) { 
+                        cleanupUtterance(true);
+                        proceedAfterSpeech();
+                    } else {
+                        console.log("Received onend for an old/cancelled utterance.");
+                    }
+                };
+
+                utterance.onerror = (event) => {
+                    if (currentUtterance === utterance) { 
+                        console.error('SpeechSynthesisUtterance.onerror', event);
+                        microphoneStatusDiv.textContent = 'Eroare la redarea vocală.';
+                        cleanupUtterance(false);
+                        proceedAfterSpeech(); 
+                    } else {
+                        console.log("Received onerror for an old/cancelled utterance.");
+                    }
+                };
+                
+                if (speechSynthesis.speaking) {
+                    console.warn("Browser reports 'speaking' right before new speak call. Delaying slightly after cancel.");
+                    setTimeout(() => {
+                        console.log("Attempting to speak new utterance after delay: ", textToSpeak.substring(0,30));
+                        speechSynthesis.speak(utterance);
+                    }, 100); 
+                } else {
+                    console.log("Attempting to speak new utterance: ", textToSpeak.substring(0,30));
+                    speechSynthesis.speak(utterance);
+                }
+            }
+
+
+            function initializeSpeechRecognition() {
+                window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!window.SpeechRecognition) {
+                    microphoneStatusDiv.textContent = 'Recunoașterea vocală nu este suportată.';
+                    speakInstruction('Recunoașterea vocală nu este suportată în acest browser.');
+                    continueTutorialBtn.disabled = true;
+                    return false;
+                }
+                
+                if (!recognition) {
                     recognition = new SpeechRecognition();
                     recognition.continuous = false;
                     recognition.lang = 'ro-RO';
@@ -374,27 +549,16 @@
                     };
 
                     recognition.onresult = (event) => {
-                        const command = event.results[0][0].transcript.toLowerCase().trim();
+                        const command = event.results[0][0].transcript.toLowerCase().trim().replace('.', ''); // Remove periods
                         console.log('Comanda primită:', command);
                         microphoneStatusDiv.textContent = `Ai spus: "${command}"`;
 
-                        let foundCommand = false;
-                        for (const key in availableCommands) {
-                            if (command.includes(key)) {
-                                const response = availableCommands[key];
-                                if (typeof response === 'function') {
-                                    response();
-                                } else {
-                                    speakInstruction(response, startListening);
-                                }
-                                updateActiveTab(key);
-                                foundCommand = true;
-                                break;
-                            }
-                        }
-
-                        if (!foundCommand) {
-                            speakInstruction(`Nu am înțeles comanda "${command}". Încercați din nou. Puteți spune "Acasă", "Plăți", etc.`, startListening);
+                        let foundCommandKey = Object.keys(availableCommands).find(key => command.includes(key));
+                        
+                        if (foundCommandKey) {
+                            availableCommands[foundCommandKey](); // Execute the function for the command
+                        } else {
+                            speakInstruction(`Nu am înțeles: "${command}". Încercați "Acasă", "Plăți", etc.`, true);
                         }
                     };
 
@@ -402,96 +566,101 @@
                         console.error('Speech recognition error', event);
                         let errorMessage = 'Eroare la recunoașterea vocală.';
                         if (event.error === 'no-speech') {
-                            errorMessage = 'Nu am auzit nicio comandă. Încercați din nou.';
+                            errorMessage = 'Nu am auzit nicio comandă. Vorbiți clar.';
+                            if (microphonePermissionGranted && continueTutorialBtn.textContent === "Oprește Tutorialul") {
+                                speakInstruction(errorMessage, true); 
+                                return; 
+                            }
                         } else if (event.error === 'audio-capture') {
-                            errorMessage = 'Eroare la captura audio. Verificați microfonul.';
+                            errorMessage = 'Eroare la captura audio.';
                         } else if (event.error === 'not-allowed') {
                             errorMessage = 'Permisiunea pentru microfon a fost refuzată.';
-                            // If permission is denied at browser level, update flags and UI
                             microphonePermissionGranted = false;
-                            microphonePermissionQueriedThisSession = true; // It was queried, now denied
-                            permissionPopup.style.display = 'none'; // Hide our custom popup
+                            microphonePermissionQueriedThisSession = true;
+                            permissionPopup.style.display = 'none';
                             continueTutorialBtn.textContent = "Continuă";
                         }
                         microphoneStatusDiv.textContent = errorMessage;
-                        speakInstruction(errorMessage, () => {
-                            if (event.error === 'no-speech' && microphonePermissionGranted) {
-                                startListening(); // Only retry 'no-speech' if permission is granted
-                            } else if (event.error !== 'no-speech') {
-                                microphoneStatusDiv.textContent = "Recunoaștere oprită. Apasă 'Continuă' pentru a reîncerca.";
-                            }
-                        });
+                        speakInstruction(errorMessage, false); 
+                        if (event.error !== 'no-speech' && event.error !== 'not-allowed') {
+                             microphoneStatusDiv.textContent += " Apasă 'Continuă' pentru a reîncerca.";
+                        }
                     };
                     
                     recognition.onend = () => {
                         console.log("Voice recognition ended.");
-                        // Avoid automatically restarting listening here to prevent loops on errors.
-                        // Restart listening explicitly after successful command processing or specific error handling.
-                        if (microphonePermissionGranted && continueTutorialBtn.textContent === "Oprește Tutorialul" && !speechSynthesis.speaking) {
-                           // If tutorial is active and no speech is playing, consider restarting listening or prompt user.
-                           // For now, rely on onresult to call startListening.
-                        }
                     };
                 }
-                return true; // Indicate successful initialization
+                return true;
             }
 
             function startListening() {
-                if (recognition && microphonePermissionGranted) { // Only start if permission is granted
+                if (isSpeaking || speechSynthesis.speaking) { 
+                    microphoneStatusDiv.textContent = "Așteptați finalizarea redării vocale...";
+                    console.log("Attempted to listen while TTS is active or synthesizer is speaking. Will wait.");
+                    return;
+                }
+                if (recognition && microphonePermissionGranted) {
                     try {
+                        console.log("Attempting to start recognition.");
                         recognition.start();
                     } catch (e) {
-                        console.error("Error starting recognition (possibly already started):", e);
-                        microphoneStatusDiv.textContent = 'Aștept comandă...';
+                        console.error("Error starting recognition:", e);
+                        if (e.name === 'InvalidStateError') {
+                            console.log("Recognition was already started or in invalid state.");
+                            microphoneStatusDiv.textContent = 'Ascult deja...';
+                        } else {
+                            microphoneStatusDiv.textContent = 'Eroare la pornirea ascultării.';
+                        }
                     }
                 } else if (!microphonePermissionGranted) {
                     microphoneStatusDiv.textContent = 'Activarea microfonului este necesară.';
                 } else {
-                     microphoneStatusDiv.textContent = 'Recunoașterea vocală nu este inițializată corect.';
+                     microphoneStatusDiv.textContent = 'Recunoașterea vocală nu este inițializată.';
                 }
             }
             
-            function updateActiveTab(commandKey) {
+            function updateActiveTab(screenKey) {
                 const navItems = document.querySelectorAll('.bottom-nav-placeholder .nav-item-placeholder');
                 navItems.forEach(item => item.classList.remove('active'));
-
-                const targetNavItem = Array.from(navItems).find(item => {
-                    const span = item.querySelector('span');
-                    return span && span.textContent.toLowerCase() === commandKey;
-                });
-
+                
+                // Find the nav item by data-tab attribute which should match the screenKey
+                const targetNavItem = document.querySelector(`.bottom-nav-placeholder .nav-item-placeholder[data-tab="${screenKey}"]`);
+                
                 if (targetNavItem) {
                     targetNavItem.classList.add('active');
+                } else {
+                    // If no specific tab, default to the first one (or handle as needed)
+                    const firstTab = document.querySelector('.bottom-nav-placeholder .nav-item-placeholder');
+                    if (firstTab) firstTab.classList.add('active');
                 }
             }
 
-            // Logic to execute once microphone permission is confirmed/granted
+
             function proceedWithMicrophoneAccess() {
                 microphonePermissionGranted = true;
-                microphonePermissionQueriedThisSession = true; // Mark as queried and granted
+                microphonePermissionQueriedThisSession = true;
                 permissionPopup.style.display = 'none';
-                microphoneStatusDiv.textContent = 'Microfon activat. Rostiți o comandă.';
-                // Update instruction text to guide the user
-                instructionText.textContent = 'Microfonul este activ. Puteți rosti comenzi precum "Acasă", "Plăți", sau "Ajutor".';
-                speakInstruction(instructionText.textContent, startListening);
+                microphoneStatusDiv.textContent = 'Microfon activat.';
+                // Navigate to the initial tutorial screen content after permission
+                navigateToScreen('tutorial'); // This will also speak the initial instructions
                 continueTutorialBtn.textContent = "Oprește Tutorialul";
             }
 
-            // Function to request microphone access (triggers browser prompt)
             function requestBrowserMicrophonePermission() {
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then((stream) => {
-                        stream.getTracks().forEach(track => track.stop()); // Stop tracks, only needed for permission
+                        stream.getTracks().forEach(track => track.stop());
                         proceedWithMicrophoneAccess();
                     })
                     .catch((err) => {
                         console.error('Error requesting microphone access via getUserMedia:', err);
-                        permissionPopup.style.display = 'none'; // Hide our custom popup
+                        permissionPopup.style.display = 'none';
                         microphoneStatusDiv.textContent = 'Accesul la microfon a fost refuzat de browser.';
-                        speakInstruction('Accesul la microfon a fost refuzat. Funcționalitatea vocală nu va fi disponibilă.');
+                        speakInstruction('Accesul la microfon a fost refuzat.', false);
                         microphonePermissionGranted = false;
-                        microphonePermissionQueriedThisSession = true; // It was queried, now denied by browser
-                        continueTutorialBtn.textContent = "Continuă"; // Allow user to try again if they change settings
+                        microphonePermissionQueriedThisSession = true;
+                        continueTutorialBtn.textContent = "Continuă";
                         continueTutorialBtn.disabled = false;
                     });
             }
@@ -500,86 +669,77 @@
                 if (continueTutorialBtn.textContent === "Oprește Tutorialul") {
                     if (recognition) recognition.stop();
                     if (speechSynthesis) speechSynthesis.cancel();
+                    isSpeaking = false; 
+                    if(utteranceTimeoutId) clearTimeout(utteranceTimeoutId); utteranceTimeoutId = null; currentUtterance = null;
                     microphoneStatusDiv.textContent = 'Tutorial oprit. Apasă "Continuă" pentru a relua.';
                     continueTutorialBtn.textContent = "Continuă";
-                    microphonePermissionGranted = false; // Reset granted status on stop for next "Continuă"
+                    microphonePermissionGranted = false;
+                    navigateToScreen('tutorial'); // Reset to initial screen view
                     return;
                 }
 
-                // Initialize speech recognition object if not already (checks browser support)
-                if (!initializeSpeechRecognition()) {
-                    return; // Exit if speech recognition is not supported
-                }
+                if (!initializeSpeechRecognition()) return;
 
-                // Check permission status using Permissions API
                 try {
                     const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
-
                     if (permissionStatus.state === 'granted') {
                         proceedWithMicrophoneAccess();
                     } else if (permissionStatus.state === 'prompt') {
                         if (!microphonePermissionQueriedThisSession) {
-                            // Show custom pop-up only if not queried this session
                             permissionPopup.style.display = 'block';
-                            speakInstruction("Pentru a utiliza comenzile vocale, avem nevoie de acces la microfonul dumneavoastră. Veți vedea o solicitare de permisiune.");
+                            speakInstruction("Pentru comenzi vocale, avem nevoie de acces la microfon. Veți vedea o solicitare.", false);
                         } else {
-                            // If queried this session but still prompt (e.g. user dismissed browser prompt without choosing)
-                            // or if user denied our custom popup then clicked continue again.
-                            // Directly trigger browser prompt again via getUserMedia if they click "Permite" on our custom pop-up.
-                            // If they already denied our custom pop-up, this path shouldn't be hit if they click "Continuă"
-                            // as microphonePermissionQueriedThisSession would be true and state would likely be 'denied' or still 'prompt'.
-                            // For safety, if it's prompt and queried, let allowMicBtn handle it.
-                            // Or, if custom popup was denied, it will be handled by the 'denied' case below if state changes.
-                             microphoneStatusDiv.textContent = "Vă rugăm acordați permisiunea pentru microfon.";
-                             permissionPopup.style.display = 'block'; // Re-show if needed
+                             microphoneStatusDiv.textContent = "Acordați permisiunea pentru microfon.";
+                             permissionPopup.style.display = 'block';
                         }
                     } else if (permissionStatus.state === 'denied') {
-                        microphonePermissionQueriedThisSession = true; // Mark as queried
+                        microphonePermissionQueriedThisSession = true;
                         permissionPopup.style.display = 'none';
                         microphoneStatusDiv.textContent = 'Accesul la microfon este refuzat.';
-                        speakInstruction('Accesul la microfon a fost refuzat. Pentru a folosi comenzile vocale, vă rugăm activați permisiunea din setările browserului și apoi apăsați "Continuă".');
+                        speakInstruction('Accesul la microfon a fost refuzat. Activați permisiunea din setările browserului și apăsați "Continuă".', false);
                     }
 
-                    // Listen for changes in permission status
                     permissionStatus.onchange = () => {
-                        console.log('Permission state changed to: ', permissionStatus.state);
                         if (permissionStatus.state === 'granted') {
                             if(!microphonePermissionGranted) proceedWithMicrophoneAccess();
                         } else if (permissionStatus.state === 'denied') {
                             microphoneStatusDiv.textContent = 'Accesul la microfon a fost refuzat.';
                             if (recognition) recognition.stop();
-                            speechSynthesis.cancel();
+                            if (speechSynthesis) speechSynthesis.cancel(); isSpeaking = false; if(utteranceTimeoutId) clearTimeout(utteranceTimeoutId); utteranceTimeoutId = null; currentUtterance = null;
                             continueTutorialBtn.textContent = "Continuă";
                             microphonePermissionGranted = false;
                         }
                     };
-
                 } catch (err) {
                     console.error("Error querying microphone permission: ", err);
-                    microphoneStatusDiv.textContent = 'Eroare la verificarea permisiunii pentru microfon.';
-                    // Fallback: Show custom popup if Permissions API fails and not queried before
+                    microphoneStatusDiv.textContent = 'Eroare la verificarea permisiunii.';
                     if (!microphonePermissionQueriedThisSession) {
                         permissionPopup.style.display = 'block';
-                        speakInstruction("Pentru a utiliza comenzile vocale, avem nevoie de acces la microfonul dumneavoastră.");
+                        speakInstruction("Pentru comenzi vocale, avem nevoie de acces la microfon.", false);
                     }
                 }
             });
 
             allowMicBtn.addEventListener('click', () => {
-                // User clicked "Permite" on the custom pop-up
-                microphonePermissionQueriedThisSession = true; // Mark that our custom prompt was interacted with
-                permissionPopup.style.display = 'none'; // Hide our custom popup
-                requestBrowserMicrophonePermission(); // Now, trigger the actual browser permission prompt
+                microphonePermissionQueriedThisSession = true;
+                permissionPopup.style.display = 'none';
+                requestBrowserMicrophonePermission();
             });
 
             denyMicBtn.addEventListener('click', () => {
-                // User clicked "Refuză" on the custom pop-up
-                microphonePermissionQueriedThisSession = true; // Mark that our custom prompt was interacted with
+                microphonePermissionQueriedThisSession = true;
                 permissionPopup.style.display = 'none';
-                microphoneStatusDiv.textContent = 'Accesul la microfon a fost refuzat de utilizator.';
-                speakInstruction('Ați refuzat accesul la microfon. Funcționalitatea vocală nu va fi disponibilă decât dacă permiteți accesul din setările browserului și reîncercați.');
+                microphoneStatusDiv.textContent = 'Accesul la microfon a fost refuzat.';
+                speakInstruction('Ați refuzat accesul la microfon.', false);
             });
             
+            // Set initial screen content (without speaking yet)
+            const initialScreenData = screens[currentScreenKey];
+            screenTitleEl.textContent = initialScreenData.title;
+            screenDescriptionEl.textContent = initialScreenData.description;
+            instructionTextEl.textContent = initialScreenData.voicePrompt;
+            updateActiveTab(currentScreenKey);
+
         });
     </script>
 </body>
